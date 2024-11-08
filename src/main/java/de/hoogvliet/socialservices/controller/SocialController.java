@@ -1,9 +1,13 @@
 package de.hoogvliet.socialservices.controller;
 
+import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class SocialController {
@@ -15,8 +19,9 @@ public class SocialController {
     }
 
     @RequestMapping(value = "/social", method = RequestMethod.GET)
-    public String getSocialServiceEntities() {
-        socialServices.getAllEntries();
-        return "SOCIAL2";
+    @ResponseBody
+    public List<Location> getSocialServiceEntities() {
+        return socialServices.getAllEntries();
+
     }
 }

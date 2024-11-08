@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.net.URL;
+import java.util.TreeSet;
 
 @Getter @Setter
 public class Location {
@@ -12,5 +13,5 @@ public class Location {
     private String postCode;
     private String city;
     private URL website;
-    private String categories;
+    private TreeSet<String> categories;
 }

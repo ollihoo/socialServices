@@ -8,44 +8,65 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 
 @Service
 public class SocialServices {
+    private static final int COLUMN_NAME = 1;
+    private static final int COLUMN_ADRESS = 2;
+    private static final int COLUMN_POSTCODE = 3;
+    private static final int COLUMN_CITY = 4;
+    private static final int COLUMN_WEBSITE = 5;
+    private static final int COLUMN_CATEGORIES = 6;
 
-    public String getAllEntries() {
+    public List<Location> getAllEntries() {
         ClassPathResource resource = new ClassPathResource("Beratungsstellen.tsv");
+        List<Location> locations = new ArrayList<>();
         InputStreamReader reader;
         try {
             reader = new InputStreamReader(resource.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            return "FALSE";
+            return locations;
         }
         try (BufferedReader br = new BufferedReader(reader)) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split("\t");
-                Location location = new Location();
-                location.setName(columns[1]);
-                location.setAddress(columns[2]);
-                location.setPostCode(columns[3]);
-                location.setCity(columns[4]);
-                location.setWebsite(getWebsite(columns));
-                location.setCategories(getCategories(columns));
+                locations.add(createLocation(columns));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "TRUE";
+        return locations;
     }
 
-    private static String getCategories(String[] columns) {
-        return (columns.length == 7)? columns[6]: null;
+    private static Location createLocation(String[] columns) {
+        Location location = new Location();
+        location.setName(columns[COLUMN_NAME]);
+        location.setAddress(columns[COLUMN_ADRESS]);
+        location.setPostCode(columns[COLUMN_POSTCODE]);
+        location.setCity(columns[COLUMN_CITY]);
+        location.setWebsite(getWebsite(columns));
+        location.setCategories(getCategories(columns));
+        return location;
     }
 
-    private static URL getWebsite(String[] columns) {
+    private static TreeSet<String> getCategories(String[] entry) {
+        TreeSet<String> categorySet = new TreeSet<>();
+        if (entry.length >= 7) {
+            String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
+            Collections.addAll(categorySet, categories);
+        }
+        return categorySet;
+    }
+
+    private static URL getWebsite(String[] entry) {
         try {
-            return (columns[5] == null)? null : new URL(columns[5]);
+            return (entry[COLUMN_WEBSITE] == null)? null : new URL(entry[COLUMN_WEBSITE]);
         } catch (MalformedURLException e) {
             return null;
         }
