@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 @Getter @Setter
 public class Location {
+    private String id;
     private String name;
     private String address;
     private String postCode;

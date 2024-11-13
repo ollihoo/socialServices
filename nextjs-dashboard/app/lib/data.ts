@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres';
+import { GET } from "@/app/dashboard/socialservices/route";
 import {
   CustomerField,
   CustomersTableType,
@@ -6,6 +7,7 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
+  SocialService
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -39,6 +41,21 @@ export async function fetchRevenue() {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
   }
+}
+
+export async function fetchSocialServices() {
+    const data = await GET();
+    const resultSocialServices: SocialService[] = data.map((item:any) => {
+      return {
+        name: item.name,
+        address: item.address,
+        postCode: item.postCode,
+        city: item.city,
+        website: item.website,
+        categories:item.categories,
+      };
+    });
+    return resultSocialServices;
 }
 
 export async function fetchLatestInvoices() {

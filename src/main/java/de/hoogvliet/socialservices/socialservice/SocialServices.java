@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +48,7 @@ public class SocialServices {
 
     private static Location createLocation(String[] columns) {
         Location location = new Location();
+        location.setId(hashString(columns[0]));
         location.setName(columns[COLUMN_NAME]);
         location.setAddress(columns[COLUMN_ADRESS]);
         location.setPostCode(columns[COLUMN_POSTCODE]);
@@ -53,6 +56,23 @@ public class SocialServices {
         location.setWebsite(getWebsite(columns));
         location.setCategories(getCategories(columns));
         return location;
+    }
+
+    private static String hashString(String input) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] hashBytes = digest.digest(input.getBytes());
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hashBytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 
     private static TreeSet<String> getCategories(String[] entry) {
