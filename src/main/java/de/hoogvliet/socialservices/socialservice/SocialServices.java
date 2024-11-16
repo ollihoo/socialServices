@@ -37,14 +37,23 @@ public class SocialServices {
         try (BufferedReader br = new BufferedReader(reader)) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] columns = line.split("\t");
-                locations.add(createLocation(columns));
+                if (! line.startsWith("Zeitstempel")) {
+                    String[] columns = line.split("\t");
+                    locations.add(createLocation(columns));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return locations;
     }
+
+    public TreeSet<String> getCategories(List<Location> locations) {
+        TreeSet<String> categories = new TreeSet<>();
+        locations.forEach(location -> categories.addAll(location.getCategories()));
+        return categories;
+    }
+
 
     private static Location createLocation(String[] columns) {
         Location location = new Location();
@@ -59,7 +68,7 @@ public class SocialServices {
     }
 
     private static String hashString(String input) {
-        MessageDigest digest = null;
+        MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
