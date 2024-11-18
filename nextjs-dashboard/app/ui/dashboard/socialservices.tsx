@@ -3,9 +3,11 @@ import clsx from 'clsx';
 import { lusitana } from '@/app/ui/fonts';
 import {SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
-export default async function SocialServices({socialServices,}: {
-    socialServices: SocialService[];
-}) {
+import {fetchSocialServices} from "@/app/lib/data";
+export default async function SocialServices() {
+
+    const socialservices = await fetchSocialServices();
+
     function getServiceLink(socialService: SocialService) {
         if (socialService.website != null) {
             return (
@@ -16,9 +18,10 @@ export default async function SocialServices({socialServices,}: {
         return ``;
     }
 
-    function getListOfServices() {
+    function getListOfServices(socialServices: SocialService[]) {
         return <>
             {socialServices.map((socialservice, i) => {
+                console.log("key: " + socialservice.id + "...");
                 return (
                     <div
                         key={socialservice.id}
@@ -46,14 +49,14 @@ export default async function SocialServices({socialServices,}: {
         </>;
     }
 
-    return (
+        return (
         <div className="flex w-full flex-col md:col-span-6">
             <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
                 Listed Services
             </h2>
             <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
                 <div className="bg-white px-6">
-                    {getListOfServices()}
+                    {getListOfServices(socialservices)}
                 </div>
                 <div className="flex items-center pb-2 pt-6">
                     <ArrowPathIcon className="h-5 w-5 text-gray-500"/>
