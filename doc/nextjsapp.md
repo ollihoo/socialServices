@@ -1,4 +1,4 @@
-# Example Application
+# NextJs Application
 
 Install an example app with this command: 
 
@@ -33,3 +33,17 @@ We suggest that you begin by typing:
 Config Files: You'll also notice config files such as next.config.js at the root of your application. Most of these 
 files are created and pre-configured when you start a new project using create-next-app. 
 You will not need to modify them in this course.
+
+## Some specialties of nextjs
+
+### layout.tsx
+This fragment shows the layout of this page set. It's parent is layout.tsx in the root folder (nextjs-dashboard/app).
+
+### page.tsx
+That's the page in a folder that acutally shows the content of that page. 
+
+### loading.tsx
+This page contains the loading skeleton of this page. see more here: https://nextjs.org/learn/dashboard-app/streaming  
+
+### ui/skeletons.tsx
+Skeleton pages for async content loading
