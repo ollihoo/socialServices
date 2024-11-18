@@ -25,13 +25,8 @@ export async function fetchRevenue() {
 }
 
 export async function fetchSocialServices() {
-    const res = await fetch('http://localhost:8080/social', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await res.json();
-    const resultSocialServices: SocialService[] = data.map((item:any) => {
+  function createSocialServices(input: any) {
+    const resultSocialServices: SocialService[] = input.map((item: any) => {
       return {
         id: item.id,
         name: item.name,
@@ -39,8 +34,23 @@ export async function fetchSocialServices() {
         postCode: item.postCode,
         city: item.city,
         website: item.website,
-        categories:item.categories,
+        categories: item.categories,
       };
     });
     return resultSocialServices;
+  }
+
+  let res;
+    try {
+       res = await fetch('http://localhost:8080/social', {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.log("SocialServices problem: ${error.message}");
+      return [];
+    }
+    const data = await res.json();
+    return createSocialServices(data);
 }
