@@ -4,7 +4,7 @@ import {
   SocialService
 } from './definitions';
 
-export function fetchFilteredInvoices(query: string, currentPage: string) {
+export function fetchFilteredInvoices(query: string, currentPage: number) {
   console.log("Query: "+query+"; currentPage: "+ currentPage);
   const data : InvoicesTable[] = [];
   data.push({
@@ -18,6 +18,12 @@ export function fetchFilteredInvoices(query: string, currentPage: string) {
     date: "2024-11-12"
   });
   return data;
+}
+
+export async function fetchInvoicesPages(query: string) {
+  // another request for the pagination to the database?? ;-(
+  // simulating, that it's two pages...
+  return 2;
 }
 
 export async function fetchRevenue() {
