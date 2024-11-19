@@ -4,6 +4,10 @@ Install an example app with this command:
 
     npx create-next-app@latest nextjs-dashboard --example "https://github.com/vercel/next-learn/tree/main/dashboard/starter-example" --use-pnpm
 
+Additional packages:
+
+    pnpm i use-debounce
+
 This is the response (if successfully done).
 
 'Success! Created nextjs-dashboard at /Users/oliverhoogvliet/IdeaProjects/socialServices/nextjs-dashboard
