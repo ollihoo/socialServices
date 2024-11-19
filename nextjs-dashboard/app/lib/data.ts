@@ -1,7 +1,24 @@
 import {
+  InvoicesTable,
   Revenue,
   SocialService
 } from './definitions';
+
+export function fetchFilteredInvoices(query: string, currentPage: string) {
+  console.log("Query: "+query+"; currentPage: "+ currentPage);
+  const data : InvoicesTable[] = [];
+  data.push({
+    id: "aaaaaaaaaa",
+    name: "Mr. Smith",
+    image_url: "/wespe.jpg",
+    email: "alan@smith.org",
+    amount: 240000,
+    customer_id: "werewww",
+    status: 'pending',
+    date: "2024-11-12"
+  });
+  return data;
+}
 
 export async function fetchRevenue() {
   try {
