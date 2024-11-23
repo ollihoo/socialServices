@@ -4,14 +4,25 @@ Build an application that shows services in Berlin (and anywhere else) as easy a
 
 ## Backend:
 * Spring Boot with RestService
-* Data are stored statically at the moment, it's the easiest way
+* Data are stored statically at the moment, it's the easiest way…
+* … but I use a database to simplify searches
 * /social delivers a list of saved locations
 * I am using actuator for some simple monitoring issues
 
+### Database installation
+I use postgres i a docker container. First step:
+
+    cp env.template .env
+
+Second step: fill in correct data for your personal database
+Do
+    docker-compose up -d
+
+to start database.
 
 ## Frontend:
 * next.js - see [Documentation](doc/nextjsapp.md)
-* React
+* React - see [Documentation](doc/react.md)
 
 ### Monitoring
 
