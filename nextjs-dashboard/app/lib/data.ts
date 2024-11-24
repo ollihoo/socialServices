@@ -1,7 +1,7 @@
 import {
   InvoicesTable,
   Revenue,
-  SocialService
+  SocialService,
 } from './definitions';
 
 export function fetchFilteredInvoices(query: string, currentPage: number) {
@@ -21,6 +21,7 @@ export function fetchFilteredInvoices(query: string, currentPage: number) {
 }
 
 export async function fetchInvoicesPages(query: string) {
+  console.log("request for page "+query);
   // another request for the pagination to the database?? ;-(
   // simulating, that it's two pages...
   return 2;

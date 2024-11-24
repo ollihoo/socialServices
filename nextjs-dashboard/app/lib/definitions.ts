@@ -2,7 +2,6 @@
 // It describes the shape of the data, and what data type each property should accept.
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
-import * as url from "url";
 
 export type User = {
   id: string;
@@ -89,6 +88,11 @@ export type InvoiceForm = {
   status: 'pending' | 'paid';
 };
 
+export type Category = {
+  id: number;
+  name: string;
+}
+
 export type SocialService = {
   id: string;
   name: string;
@@ -96,5 +100,5 @@ export type SocialService = {
   postCode: string;
   city: string;
   website: string;
-  categories:string[];
+  categories:Category[];
 };

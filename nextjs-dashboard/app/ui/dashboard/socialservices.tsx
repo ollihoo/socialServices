@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import {SocialService} from '@/app/lib/definitions';
+import {Category, SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
 import {fetchSocialServices} from "@/app/lib/data";
 export default async function SocialServices() {
@@ -21,8 +21,8 @@ export default async function SocialServices() {
         return (
           <ul>
               {
-                  socialService.categories.map((entry: string) => {
-                     return (<li key={entry} className="text-sm font-semibold">{entry}</li>);
+                  socialService.categories.map((entry: Category) => {
+                     return (<li key={entry.id} className="text-sm font-semibold">{entry.name}</li>);
                   })
               }
           </ul>
@@ -32,7 +32,6 @@ export default async function SocialServices() {
     function getListOfServices(socialServices: SocialService[]) {
         return <>
             {socialServices.map((socialservice, i) => {
-                console.log("key: " + socialservice.id + "...");
                 return (
                     <div
                         key={socialservice.id}

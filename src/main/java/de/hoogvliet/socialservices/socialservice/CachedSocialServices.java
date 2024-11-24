@@ -4,14 +4,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 @Service
 public class CachedSocialServices {
     private final SocialServices socialServices;
     private static List<Location> locations;
-    private static TreeSet<String> categories;
+    private static HashSet<Category> categories;
 
     private final Timer locationsTimer;
     private final Timer categoriesTimer;
@@ -31,7 +31,7 @@ public class CachedSocialServices {
         return locations;
     }
 
-    public synchronized TreeSet<String> getCategories() {
+    public synchronized HashSet<Category> getCategories() {
         categoriesTimer.record(() -> {
             if (categories == null) {
                 getAllEntries();

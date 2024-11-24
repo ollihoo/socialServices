@@ -1,14 +1,15 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.CachedSocialServices;
+import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.TreeSet;
 
 @RestController
 public class SocialController {
@@ -26,7 +27,7 @@ public class SocialController {
     }
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
-    public TreeSet<String> getCategories() {
+    public HashSet<Category> getCategories() {
         return socialServices.getCategories();
     }
 }

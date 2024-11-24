@@ -10,10 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
 @Service
 public class SocialServices {
@@ -48,8 +45,8 @@ public class SocialServices {
         return locations;
     }
 
-    public TreeSet<String> getCategories(List<Location> locations) {
-        TreeSet<String> categories = new TreeSet<>();
+    public HashSet<Category> getCategories(List<Location> locations) {
+        HashSet<Category> categories = new HashSet<>();
         locations.forEach(location -> categories.addAll(location.getCategories()));
         return categories;
     }
@@ -84,11 +81,15 @@ public class SocialServices {
         return hexString.toString();
     }
 
-    private static TreeSet<String> getCategories(String[] entry) {
-        TreeSet<String> categorySet = new TreeSet<>();
+    private static HashSet<Category> getCategories(String[] entry) {
+        HashSet<Category> categorySet = new HashSet<>();
         if (entry.length >= 7) {
             String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
-            Collections.addAll(categorySet, categories);
+            Arrays.stream(categories).forEach((String cat) -> {
+                Category myCat = new Category();
+                myCat.setName(cat);
+                categorySet.add(myCat);
+            });
         }
         return categorySet;
     }
