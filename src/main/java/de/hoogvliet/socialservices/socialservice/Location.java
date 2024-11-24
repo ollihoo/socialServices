@@ -15,7 +15,7 @@ public class Location {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-    @Nonnull
+    @Nonnull @JsonIgnore
     private String tableReference;
     private String address;
     private String postCode;
