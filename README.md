@@ -9,6 +9,12 @@ Build an application that shows services in Berlin (and anywhere else) as easy a
 * /social delivers a list of saved locations
 * I am using actuator for some simple monitoring issues
 
+To get application running:
+
+    cp application.properties.template apllication.properties
+
+Do not forget to check, if your env vars are set correctly.
+
 ### Database installation
 I use postgres i a docker container. First step:
 
@@ -27,7 +33,6 @@ to start database.
 ### Monitoring
 
     http://localhost:8080/actuator/health
-
     http://localhost:8080/actuator/metrics
 Is activated, it's the easiest way to see, if metric does work and how long this app needs. I don't know when this
 application fails with this in-memory-approach, so it's better to measure as soon as possible.
