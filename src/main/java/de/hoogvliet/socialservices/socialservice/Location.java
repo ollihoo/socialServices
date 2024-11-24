@@ -1,24 +1,26 @@
 package de.hoogvliet.socialservices.socialservice;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.annotation.Nonnull;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.net.URL;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter @Entity
 public class Location {
-    @Id
-    private String id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
     private String name;
+    @Nonnull
+    private String tableReference;
     private String address;
     private String postCode;
     private String city;
     private URL website;
 
     @OneToMany(mappedBy = "id")
-    private HashSet<Category> categories;
+    private List<Category> categories = new ArrayList<>();
 }

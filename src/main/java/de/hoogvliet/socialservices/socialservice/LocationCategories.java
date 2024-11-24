@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity @Getter @Setter
 public class LocationCategories {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne

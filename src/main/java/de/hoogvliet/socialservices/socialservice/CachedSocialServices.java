@@ -3,15 +3,13 @@ package de.hoogvliet.socialservices.socialservice;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
 import java.util.List;
 
 @Service
 public class CachedSocialServices {
     private final SocialServices socialServices;
     private static List<Location> locations;
-    private static HashSet<Category> categories;
+    private static List<Category> categories;
 
     private final Timer locationsTimer;
     private final Timer categoriesTimer;
@@ -31,11 +29,11 @@ public class CachedSocialServices {
         return locations;
     }
 
-    public synchronized HashSet<Category> getCategories() {
+    public synchronized List<Category> getCategories() {
         categoriesTimer.record(() -> {
             if (categories == null) {
                 getAllEntries();
-                categories = socialServices.getCategories(locations);
+                categories = socialServices.getOrCreateCategories(locations);
             }
         });
         return categories;

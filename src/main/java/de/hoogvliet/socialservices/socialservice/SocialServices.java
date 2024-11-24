@@ -21,6 +21,14 @@ public class SocialServices {
     private static final int COLUMN_WEBSITE = 5;
     private static final int COLUMN_CATEGORIES = 6;
 
+    private final CategoryRepository categoryRepository;
+    private final LocationRepository locationRepository;
+
+    public SocialServices(CategoryRepository categoryRepository, LocationRepository locationRepository) {
+        this.categoryRepository = categoryRepository;
+        this.locationRepository = locationRepository;
+    }
+
     public List<Location> getAllEntries() {
         ClassPathResource resource = new ClassPathResource("Beratungsstellen.tsv");
         List<Location> locations = new ArrayList<>();
@@ -36,7 +44,7 @@ public class SocialServices {
             while ((line = br.readLine()) != null) {
                 if (! line.startsWith("Zeitstempel")) {
                     String[] columns = line.split("\t");
-                    locations.add(createLocation(columns));
+                    locations.add(getOrCreateLocation(columns));
                 }
             }
         } catch (IOException e) {
@@ -45,22 +53,29 @@ public class SocialServices {
         return locations;
     }
 
-    public HashSet<Category> getCategories(List<Location> locations) {
-        HashSet<Category> categories = new HashSet<>();
+    public List<Category> getOrCreateCategories(List<Location> locations) {
+        List<Category> categories = new ArrayList<>();
         locations.forEach(location -> categories.addAll(location.getCategories()));
         return categories;
     }
 
 
-    private static Location createLocation(String[] columns) {
+    private Location getOrCreateLocation(String[] columns) {
+        String id = hashString(columns[0]);
+        Optional<Location> foundLocation = locationRepository.findByTableReference(id);
+        return foundLocation.orElseGet(() -> createLocation(id, columns));
+    }
+
+    private Location createLocation(String id, String[] columns) {
         Location location = new Location();
-        location.setId(hashString(columns[0]));
+        location.setTableReference(id);
         location.setName(columns[COLUMN_NAME]);
         location.setAddress(columns[COLUMN_ADRESS]);
         location.setPostCode(columns[COLUMN_POSTCODE]);
         location.setCity(columns[COLUMN_CITY]);
         location.setWebsite(getWebsite(columns));
-        location.setCategories(getCategories(columns));
+        location.setCategories(getOrCreateCategories(columns));
+        locationRepository.save(location);
         return location;
     }
 
@@ -81,17 +96,27 @@ public class SocialServices {
         return hexString.toString();
     }
 
-    private static HashSet<Category> getCategories(String[] entry) {
-        HashSet<Category> categorySet = new HashSet<>();
+    private List<Category> getOrCreateCategories(String[] entry) {
+        List<Category> categorySet = new ArrayList<>();
         if (entry.length >= 7) {
             String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
             Arrays.stream(categories).forEach((String cat) -> {
-                Category myCat = new Category();
-                myCat.setName(cat);
-                categorySet.add(myCat);
+                Optional<Category> optionalCategory =categoryRepository.findByName(cat);
+                if (optionalCategory.isPresent()) {
+                    categorySet.add(optionalCategory.get());
+                } else {
+                    categorySet.add(createCategory(cat));
+                }
             });
         }
         return categorySet;
+    }
+
+    private Category createCategory(String cat) {
+        Category myCat = new Category();
+        myCat.setName(cat);
+        categoryRepository.save(myCat);
+        return myCat;
     }
 
     private static URL getWebsite(String[] entry) {

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -27,7 +26,7 @@ public class SocialController {
     }
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
-    public HashSet<Category> getCategories() {
+    public List<Category> getCategories() {
         return socialServices.getCategories();
     }
 }
