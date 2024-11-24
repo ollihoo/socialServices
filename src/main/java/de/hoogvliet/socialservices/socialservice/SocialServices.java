@@ -23,10 +23,14 @@ public class SocialServices {
 
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
+    private final LocationCategoryRepository locationCategoryRepository;
 
-    public SocialServices(CategoryRepository categoryRepository, LocationRepository locationRepository) {
+    public SocialServices(CategoryRepository categoryRepository,
+                          LocationRepository locationRepository,
+                          LocationCategoryRepository locationCategoryRepository) {
         this.categoryRepository = categoryRepository;
         this.locationRepository = locationRepository;
+        this.locationCategoryRepository = locationCategoryRepository;
     }
 
     public List<Location> getAllEntries() {
@@ -53,17 +57,20 @@ public class SocialServices {
         return locations;
     }
 
-    public List<Category> getOrCreateCategories(List<Location> locations) {
-        List<Category> categories = new ArrayList<>();
-        locations.forEach(location -> categories.addAll(location.getCategories()));
-        return categories;
+
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
 
     private Location getOrCreateLocation(String[] columns) {
         String id = hashString(columns[0]);
         Optional<Location> foundLocation = locationRepository.findByTableReference(id);
-        return foundLocation.orElseGet(() -> createLocation(id, columns));
+        Location location = foundLocation.orElseGet(() -> createLocation(id, columns));
+
+        saveLocationCategories(location, getOrCreateCategories(columns));
+
+        return location;
     }
 
     private Location createLocation(String id, String[] columns) {
@@ -74,9 +81,24 @@ public class SocialServices {
         location.setPostCode(columns[COLUMN_POSTCODE]);
         location.setCity(columns[COLUMN_CITY]);
         location.setWebsite(getWebsite(columns));
-        location.setCategories(getOrCreateCategories(columns));
         locationRepository.save(location);
         return location;
+    }
+
+    private void saveLocationCategories(Location location, List<Category> categories) {
+        categories.forEach(category -> {
+            Optional<LocationCategory> optionalLocationCategory =locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
+            if (optionalLocationCategory.isEmpty()) {
+                createLocationCategory(location, category);
+            }
+        });
+    }
+
+    private LocationCategory createLocationCategory(Location location, Category category) {
+        LocationCategory lc = new LocationCategory();
+        lc.setCategory(category);
+        lc.setLocation(location);
+        return locationCategoryRepository.save(lc);
     }
 
     private static String hashString(String input) {

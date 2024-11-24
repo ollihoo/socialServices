@@ -14,7 +14,9 @@ public class CachedSocialServices {
     private final Timer locationsTimer;
     private final Timer categoriesTimer;
 
-    public CachedSocialServices(SocialServices socialServices, MeterRegistry meterRegistry) {
+    public CachedSocialServices(
+            SocialServices socialServices,
+            MeterRegistry meterRegistry) {
         this.socialServices = socialServices;
         locationsTimer = Timer.builder("CachedSocialServices.getAllEntries").register(meterRegistry);
         categoriesTimer = Timer.builder("CachedSocialServices.getCategories").register(meterRegistry);
@@ -33,7 +35,7 @@ public class CachedSocialServices {
         categoriesTimer.record(() -> {
             if (categories == null) {
                 getAllEntries();
-                categories = socialServices.getOrCreateCategories(locations);
+                categories = socialServices.getAllCategories();
             }
         });
         return categories;

@@ -5,17 +5,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity @Getter @Setter
-public class LocationCategories {
+@Table(uniqueConstraints = @UniqueConstraint(columnNames= {"location_id","category_id"}))
+public class LocationCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "location_id")
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
 }

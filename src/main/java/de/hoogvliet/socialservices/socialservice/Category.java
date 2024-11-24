@@ -1,10 +1,11 @@
 package de.hoogvliet.socialservices.socialservice;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Data
 public class Category {
@@ -13,4 +14,8 @@ public class Category {
     private int id;
 
     private String name;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "category")
+    private List<LocationCategory> locationCategories = new ArrayList<>();
 }

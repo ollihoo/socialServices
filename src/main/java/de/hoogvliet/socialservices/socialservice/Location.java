@@ -1,5 +1,6 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,7 +21,13 @@ public class Location {
     private String postCode;
     private String city;
     private URL website;
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<LocationCategory> locationCategories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "id")
-    private List<Category> categories = new ArrayList<>();
+    public List<Category> getCategories() {
+        List<Category> categories = new ArrayList<>();
+        locationCategories.forEach(lc -> categories.add(lc.getCategory()));
+        return categories;
+    }
 }
