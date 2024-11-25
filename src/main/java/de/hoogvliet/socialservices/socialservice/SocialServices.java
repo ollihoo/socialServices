@@ -13,14 +13,15 @@ public class SocialServices {
 
     private final LocationService locationService;
     private final CategoryService categoryService;
-    private final LocationCategoryRepository locationCategoryRepository;
+
+    private final LocationCategoryService locationCategoryService;
 
     public SocialServices(CategoryService categoryService,
                           LocationService locationService,
-                          LocationCategoryRepository locationCategoryRepository) {
+                          LocationCategoryService locationCategoryService) {
         this.categoryService = categoryService;
         this.locationService = locationService;
-        this.locationCategoryRepository = locationCategoryRepository;
+        this.locationCategoryService = locationCategoryService;
     }
 
     public List<Location> getAllEntries() {
@@ -53,25 +54,10 @@ public class SocialServices {
 
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationService.getOrCreateLocation(columns);
-        saveLocationCategories(location, categoryService.getOrCreateCategories(columns));
+        locationCategoryService.save(location, categoryService.getOrCreateCategories(columns));
         return location;
     }
 
-    private void saveLocationCategories(Location location, List<Category> categories) {
-        categories.forEach(category -> {
-            Optional<LocationCategory> optionalLocationCategory = locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
-            if (optionalLocationCategory.isEmpty()) {
-                createLocationCategory(location, category);
-            }
-        });
-    }
-
-    private void createLocationCategory(Location location, Category category) {
-        LocationCategory lc = new LocationCategory();
-        lc.setCategory(category);
-        lc.setLocation(location);
-        locationCategoryRepository.save(lc);
-    }
 
 
 
