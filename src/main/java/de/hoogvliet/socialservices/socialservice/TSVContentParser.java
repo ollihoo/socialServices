@@ -1,5 +1,6 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -9,33 +10,19 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
-public class SocialServices {
+public class TSVContentParser {
+    @Autowired private LocationService locationService;
+    @Autowired private CategoryService categoryService;
+    @Autowired private LocationCategoryService locationCategoryService;
 
-    private final LocationService locationService;
-    private final CategoryService categoryService;
-
-    private final LocationCategoryService locationCategoryService;
-
-    public SocialServices(CategoryService categoryService,
-                          LocationService locationService,
-                          LocationCategoryService locationCategoryService) {
-        this.categoryService = categoryService;
-        this.locationService = locationService;
-        this.locationCategoryService = locationCategoryService;
-    }
-
-    public List<Location> getAllEntries() {
+    public List<Location> getAllEntriesFromTSV() {
         ClassPathResource resource = new ClassPathResource("Beratungsstellen.tsv");
         List<Location> locations = new ArrayList<>();
         InputStreamReader reader;
         try {
-            reader = new InputStreamReader(resource.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return locations;
-        }
-        try (BufferedReader br = new BufferedReader(reader)) {
             String line;
+            reader = new InputStreamReader(resource.getInputStream());
+            BufferedReader br = new BufferedReader(reader);
             while ((line = br.readLine()) != null) {
                 if (! line.startsWith("Zeitstempel")) {
                     String[] columns = line.split("\t");
@@ -44,12 +31,10 @@ public class SocialServices {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return locations;
         }
-        return locations;
-    }
 
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+        return locations;
     }
 
     private Location getOrCreateLocation(String[] columns) {
