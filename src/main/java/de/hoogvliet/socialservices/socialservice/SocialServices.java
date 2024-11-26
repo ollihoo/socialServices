@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CachedSocialServices {
+public class SocialServices {
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private LocationRepository locationRepository;
 

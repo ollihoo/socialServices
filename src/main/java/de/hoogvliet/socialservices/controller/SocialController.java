@@ -1,6 +1,6 @@
 package de.hoogvliet.socialservices.controller;
 
-import de.hoogvliet.socialservices.socialservice.CachedSocialServices;
+import de.hoogvliet.socialservices.socialservice.SocialServices;
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +13,9 @@ import java.util.List;
 @RestController
 public class SocialController {
 
-    private final CachedSocialServices socialServices;
+    private final SocialServices socialServices;
 
-    public SocialController(CachedSocialServices socialServices) {
+    public SocialController(SocialServices socialServices) {
         this.socialServices = socialServices;
     }
 
