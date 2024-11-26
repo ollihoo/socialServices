@@ -1,6 +1,5 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
-import de.hoogvliet.socialservices.socialservice.CategoryService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import de.hoogvliet.socialservices.socialservice.LocationService;
@@ -14,10 +13,10 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 @Service
-public class TSVContentParser {
+public class TSVParser {
     public static final String TSV_RESOURCE = "Beratungsstellen.tsv";
     @Autowired private LocationService locationService;
-    @Autowired private CategoryService categoryService;
+    @Autowired private TSVCategoryParser categoryParser;
     @Autowired private LocationCategoryService locationCategoryService;
 
     public List<Location> getAllEntriesFromTSV() {
@@ -42,7 +41,7 @@ public class TSVContentParser {
 
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationService.getOrCreateLocation(columns);
-        locationCategoryService.save(location, categoryService.getOrCreateCategories(columns));
+        locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
         return location;
     }
 }
