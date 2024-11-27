@@ -17,6 +17,8 @@ import static org.mockito.Mockito.when;
 class LocationServiceTest {
     private final String[] ANY_LOCATION_INPUT = { "TIMESTAMP", "NAME", "SOMEADDRESS", "POSTCODE", "CITY", "https://localhost/" };
     private final String CORRECT_TABLEREFERENCE = "80c1f0329fb983673bddb061a0068098fb372bb05009f9d20077149a74f71634";
+    private final Location ANY_LOCATION_FROM_DB = new Location();
+
     @InjectMocks
     private LocationService locationService;
 
@@ -49,11 +51,10 @@ class LocationServiceTest {
     }
 
     @Test public void getOrCreateLocationReturnsEntryFromDatabase() {
-        Location dbLocation = new Location();
-        Optional<Location> locationOptional = Optional.of(dbLocation);
+        Optional<Location> locationOptional = Optional.of(ANY_LOCATION_FROM_DB);
         when(locationRepository.findByTableReference(any())).thenReturn(locationOptional);
         Location actualLocation = locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
-        assertEquals(dbLocation, actualLocation);
+        assertEquals(ANY_LOCATION_FROM_DB, actualLocation);
     }
 
     @Test public void getOrCreateLocationReturnsNewEntrySavedInDatabase() {
@@ -64,4 +65,15 @@ class LocationServiceTest {
         verify(locationRepository).save(any(Location.class));
     }
 
+    @Test public void createLocationCanHandleEntriesWithoutWebsiteColumn() {
+        String[] withInvalidWebsite = { "", "", "", "", "" };
+        Location createdLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
+        assertNull(createdLocation.getWebsite());
+    }
+
+    @Test public void createLocationSkipsInvalidUrls() {
+        String[] withInvalidWebsite = { "", "", "", "", "", "invalid url" };
+        Location createdLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
+        assertNull(createdLocation.getWebsite());
+    }
 }

@@ -1,5 +1,6 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -9,7 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-@Service
+@Service @Log4j2
 public class LocationService {
     private static final int COLUMN_TIMESTAMP = 0;
     private static final int COLUMN_NAME = 1;
@@ -42,9 +43,14 @@ public class LocationService {
     }
 
     private static URL getWebsite(String[] entry) {
+        if (entry.length <= COLUMN_WEBSITE) {
+            return null;
+        }
         try {
-            return (entry[COLUMN_WEBSITE] == null)? null : URI.create(entry[COLUMN_WEBSITE]).toURL();
-        } catch (MalformedURLException e) {
+            URI uri = URI.create(entry[COLUMN_WEBSITE]);//.toURL();
+            return uri.toURL();
+        } catch (IllegalArgumentException | MalformedURLException e) {
+            log.warn("Please check tsv input: {}", e.getMessage());
             return null;
         }
     }
