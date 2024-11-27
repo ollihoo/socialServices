@@ -1,10 +1,10 @@
 package de.hoogvliet.socialservices.socialservice;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,16 +12,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
     private static final List<Category> ANY_CATEGORIES_LIST = Collections.emptyList();
     @Mock
     private CategoryRepository categoryRepository;
     @InjectMocks private CategoryService categoryService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void getAllCategoriesUsesRepositoryAndReturnsResult() {
