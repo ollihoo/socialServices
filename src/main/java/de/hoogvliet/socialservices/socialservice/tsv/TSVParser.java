@@ -3,10 +3,8 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import de.hoogvliet.socialservices.socialservice.LocationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,28 +13,36 @@ import java.util.*;
 @Service
 public class TSVParser {
     public static final String TSV_RESOURCE = "Beratungsstellen.tsv";
-    @Autowired private LocationService locationService;
-    @Autowired private TSVCategoryParser categoryParser;
-    @Autowired private LocationCategoryService locationCategoryService;
+    private final LocationService locationService;
+    private final TSVCategoryParser categoryParser;
+    private final LocationCategoryService locationCategoryService;
+
+    public TSVParser(LocationService locationService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService) {
+        this.locationService = locationService;
+        this.categoryParser = tsvCategoryParser;
+        this.locationCategoryService = locationCategoryService;
+    }
 
     public List<Location> getAllEntriesFromTSV() {
-        ClassPathResource resource = new ClassPathResource(TSV_RESOURCE);
         List<Location> locations = new ArrayList<>();
-        InputStreamReader reader;
+        String line;
         try {
-            String line;
-            reader = new InputStreamReader(resource.getInputStream());
-            BufferedReader br = new BufferedReader(reader);
+            BufferedReader br = openReader();
             while ((line = br.readLine()) != null) {
                 if (! line.startsWith("Zeitstempel")) {
-                    String[] columns = line.split("\t");
-                    locations.add(getOrCreateLocation(columns));
+                    locations.add(getOrCreateLocation(line.split("\t")));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return locations;
+    }
+
+    private static BufferedReader openReader() throws IOException {
+        ClassPathResource resource = new ClassPathResource(TSV_RESOURCE);
+        InputStreamReader reader = new InputStreamReader(resource.getInputStream());
+        return new BufferedReader(reader);
     }
 
     private Location getOrCreateLocation(String[] columns) {
