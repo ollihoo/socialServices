@@ -15,7 +15,8 @@ public class LocationCategoryService {
 
     public void save(Location location, List<Category> categories) {
         categories.forEach(category -> {
-            Optional<LocationCategory> optionalLocationCategory = locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
+            Optional<LocationCategory> optionalLocationCategory =
+                    locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
             if (optionalLocationCategory.isEmpty()) {
                 createLocationCategory(location, category);
             }
