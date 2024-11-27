@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class LocationService {
+    private static final int COLUMN_TIMESTAMP = 0;
     private static final int COLUMN_NAME = 1;
     private static final int COLUMN_ADRESS = 2;
     private static final int COLUMN_POSTCODE = 3;
@@ -35,7 +36,7 @@ public class LocationService {
     }
 
     public Location getOrCreateLocation(String[] columns) {
-        String tableReference = hashString(columns[0]);
+        String tableReference = hashString(columns[COLUMN_TIMESTAMP]);
         Optional<Location> locationOptional = locationRepository.findByTableReference(tableReference);
         return locationOptional.orElseGet(() -> createLocation(tableReference, columns));
     }

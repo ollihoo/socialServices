@@ -6,8 +6,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LocationServiceTest {
@@ -43,4 +47,21 @@ class LocationServiceTest {
         locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(CORRECT_TABLEREFERENCE);
     }
+
+    @Test public void getOrCreateLocationReturnsEntryFromDatabase() {
+        Location dbLocation = new Location();
+        Optional<Location> locationOptional = Optional.of(dbLocation);
+        when(locationRepository.findByTableReference(any())).thenReturn(locationOptional);
+        Location actualLocation = locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        assertEquals(dbLocation, actualLocation);
+    }
+
+    @Test public void getOrCreateLocationReturnsNewEntrySavedInDatabase() {
+        Optional<Location> emptyOptional = Optional.empty();
+        when(locationRepository.findByTableReference(any())).thenReturn(emptyOptional);
+        locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        verify(locationRepository).findByTableReference(any());
+        verify(locationRepository).save(any(Location.class));
+    }
+
 }
