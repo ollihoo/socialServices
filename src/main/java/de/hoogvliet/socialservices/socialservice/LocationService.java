@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -21,9 +22,9 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public Location createLocation(String id, String[] columns) {
+    public Location createLocation(String tableReference, String[] columns) {
         Location location = new Location();
-        location.setTableReference(id);
+        location.setTableReference(tableReference);
         location.setName(columns[COLUMN_NAME]);
         location.setAddress(columns[COLUMN_ADRESS]);
         location.setPostCode(columns[COLUMN_POSTCODE]);
@@ -34,14 +35,14 @@ public class LocationService {
     }
 
     public Location getOrCreateLocation(String[] columns) {
-        String id = hashString(columns[0]);
-        Optional<Location> locationOptional = locationRepository.findByTableReference(id);
-        return locationOptional.orElseGet(() -> createLocation(id, columns));
+        String tableReference = hashString(columns[0]);
+        Optional<Location> locationOptional = locationRepository.findByTableReference(tableReference);
+        return locationOptional.orElseGet(() -> createLocation(tableReference, columns));
     }
 
     private static URL getWebsite(String[] entry) {
         try {
-            return (entry[COLUMN_WEBSITE] == null)? null : new URL(entry[COLUMN_WEBSITE]);
+            return (entry[COLUMN_WEBSITE] == null)? null : URI.create(entry[COLUMN_WEBSITE]).toURL();
         } catch (MalformedURLException e) {
             return null;
         }
