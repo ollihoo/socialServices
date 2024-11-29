@@ -9,7 +9,6 @@ export default function CategoriesDropdown({ categories }: { categories: Categor
   const { replace } = useRouter();
 
   const handleSelection = (event: any) => {
-    console.log("Selected value: ", event.target.value);
     const params = new URLSearchParams(searchParams);
     if (event.target.value) {
       params.set(QUERY_PARAM, event.target.value);
@@ -23,7 +22,7 @@ export default function CategoriesDropdown({ categories }: { categories: Categor
     <div className="relative flex flex-1 flex-shrink-0">
       <div>
         <label htmlFor="categoryDropdown" className="sr-only">Choose a category;</label>
-        <select id="categoryDropdown" value={searchParams.get('query')?.toString()}
+        <select id="categoryDropdown" value={searchParams.get(QUERY_PARAM)?.toString()}
                 onChange={handleSelection}>
           <option value="" disabled>Select a category</option>
           {
