@@ -1,4 +1,5 @@
 import {
+  Category,
   InvoicesTable,
   Revenue,
   SocialService,
@@ -77,4 +78,32 @@ export async function fetchSocialServices() {
     }
     const data = await res.json();
     return createSocialServices(data);
+}
+
+export async function fetchCategories () {
+
+  function createCategories(input: any) {
+    const categories: Category[] = input.map((item: any) => {
+      return {
+        id: item.id,
+        name: item.name,
+      };
+    });
+    return categories;
+  }
+
+  let result;
+
+  try {
+    result = await fetch('http://localhost:8080/categories', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (error) {
+//    console.log("categories problem: ${error.message}");
+    return [];
+  }
+  const data = await result.json();
+  return createCategories(data);
 }

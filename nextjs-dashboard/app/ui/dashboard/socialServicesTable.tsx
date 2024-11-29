@@ -1,11 +1,9 @@
 import clsx from 'clsx';
 import {Category, SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
-import {fetchSocialServices} from "@/app/lib/data";
-export default async function SocialServices() {
-
+import { fetchSocialServices} from "@/app/lib/data";
+export default async function SocialServicesTable() {
     const socialservices = await fetchSocialServices();
-
     function getServiceLink(socialService: SocialService) {
         if (socialService.website != null) {
             return (
@@ -60,7 +58,7 @@ export default async function SocialServices() {
         </>;
     }
 
-        return (
+    return (
         <div className="flex w-full flex-col md:col-span-8">
             <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
                 <div className="bg-white px-6">
