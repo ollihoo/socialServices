@@ -22,22 +22,34 @@ public class LocationMaintenanceService {
         this.locationRepository = locationRepository;
     }
 
-    public Location createLocation(String tableReference, String[] columns) {
+    public Location createLocation(String[] columns) {
         Location location = new Location();
-        location.setTableReference(tableReference);
+        location.setTableReference(createTableReference(columns));
         location.setName(columns[COLUMN_NAME.getColum()]);
         location.setAddress(columns[COLUMN_ADRESS.getColum()]);
         location.setPostCode(columns[COLUMN_POSTCODE.getColum()]);
         location.setCity(columns[COLUMN_CITY.getColum()]);
         location.setWebsite(getWebsite(columns));
-        locationRepository.save(location);
         return location;
     }
 
-    public Location getOrCreateLocation(String[] columns) {
-        String tableReference = hashString(columns[COLUMN_TIMESTAMP.getColum()]);
+    public Location getLocation(String tableReference) {
         Optional<Location> locationOptional = locationRepository.findByTableReference(tableReference);
-        return locationOptional.orElseGet(() -> createLocation(tableReference, columns));
+        return locationOptional.orElse(null);
+    }
+
+    private static String createTableReference(String[] columns) {
+        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
+    }
+
+    public Location getOrCreateLocation(String[] columns) {
+        Location locationFromDb = getLocation(createTableReference(columns));
+        if (locationFromDb != null) {
+            return locationFromDb;
+        }
+        Location createdLocation = createLocation(columns);
+        locationRepository.save(createdLocation);
+        return createdLocation;
     }
 
     private static URL getWebsite(String[] entry) {
@@ -45,7 +57,7 @@ public class LocationMaintenanceService {
             return null;
         }
         try {
-            URI uri = URI.create(entry[COLUMN_WEBSITE.getColum()]);//.toURL();
+            URI uri = URI.create(entry[COLUMN_WEBSITE.getColum()]);
             return uri.toURL();
         } catch (IllegalArgumentException | MalformedURLException e) {
             log.warn("Please check tsv input: {}", e.getMessage());
