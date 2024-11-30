@@ -1,5 +1,7 @@
-package de.hoogvliet.socialservices.socialservice;
+package de.hoogvliet.socialservices.socialservice.tsv;
 
+import de.hoogvliet.socialservices.socialservice.Location;
+import de.hoogvliet.socialservices.socialservice.LocationRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service @Log4j2
-public class LocationService {
+public class LocationMaintenanceService {
     private static final int COLUMN_TIMESTAMP = 0;
     private static final int COLUMN_NAME = 1;
     private static final int COLUMN_ADRESS = 2;
@@ -20,7 +22,7 @@ public class LocationService {
     private static final int COLUMN_WEBSITE = 5;
     private final LocationRepository locationRepository;
 
-    public LocationService(LocationRepository locationRepository) {
+    public LocationMaintenanceService(LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 

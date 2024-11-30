@@ -2,7 +2,6 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
-import de.hoogvliet.socialservices.socialservice.LocationService;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -13,12 +12,12 @@ import java.util.*;
 @Service
 public class TSVParser {
     public static final String TSV_RESOURCE = "Beratungsstellen.tsv";
-    private final LocationService locationService;
+    private final LocationMaintenanceService locationMaintenanceService;
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
 
-    public TSVParser(LocationService locationService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService) {
-        this.locationService = locationService;
+    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService) {
+        this.locationMaintenanceService = locationMaintenanceService;
         this.categoryParser = tsvCategoryParser;
         this.locationCategoryService = locationCategoryService;
     }
@@ -46,7 +45,7 @@ public class TSVParser {
     }
 
     private Location getOrCreateLocation(String[] columns) {
-        Location location = locationService.getOrCreateLocation(columns);
+        Location location = locationMaintenanceService.getOrCreateLocation(columns);
         locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
         return location;
     }

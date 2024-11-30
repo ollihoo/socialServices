@@ -1,5 +1,7 @@
-package de.hoogvliet.socialservices.socialservice;
+package de.hoogvliet.socialservices.socialservice.tsv;
 
+import de.hoogvliet.socialservices.socialservice.Location;
+import de.hoogvliet.socialservices.socialservice.LocationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,19 +16,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LocationServiceTest {
+class LocationMaintenanceServiceTest {
     private final String[] ANY_LOCATION_INPUT = { "TIMESTAMP", "NAME", "SOMEADDRESS", "POSTCODE", "CITY", "https://localhost/" };
     private final String CORRECT_TABLEREFERENCE = "80c1f0329fb983673bddb061a0068098fb372bb05009f9d20077149a74f71634";
     private final Location ANY_LOCATION_FROM_DB = new Location();
 
     @InjectMocks
-    private LocationService locationService;
+    private LocationMaintenanceService locationMaintenanceService;
 
     @Mock
     private LocationRepository locationRepository;
 
     @Test public void createLocationParsesInputCorrectly() {
-        Location createdLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, ANY_LOCATION_INPUT);
+        Location createdLocation = locationMaintenanceService.createLocation(CORRECT_TABLEREFERENCE, ANY_LOCATION_INPUT);
         assertEquals(ANY_LOCATION_INPUT[1], createdLocation.getName());
         assertEquals(ANY_LOCATION_INPUT[2], createdLocation.getAddress());
         assertEquals(ANY_LOCATION_INPUT[3], createdLocation.getPostCode());
@@ -36,44 +38,44 @@ class LocationServiceTest {
     }
 
     @Test public void createLocationSavesItsInputToDatabase() {
-        Location savedLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, ANY_LOCATION_INPUT);
+        Location savedLocation = locationMaintenanceService.createLocation(CORRECT_TABLEREFERENCE, ANY_LOCATION_INPUT);
         verify(locationRepository).save(savedLocation);
     }
 
     @Test public void getOrCreateLocationCreatesATableReference() {
-        Location location = locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        Location location = locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
         assertEquals(CORRECT_TABLEREFERENCE, location.getTableReference());
     }
 
     @Test public void getOrCreateLocationUsesTableReferenceForDatabase() {
-        locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(CORRECT_TABLEREFERENCE);
     }
 
     @Test public void getOrCreateLocationReturnsEntryFromDatabase() {
         Optional<Location> locationOptional = Optional.of(ANY_LOCATION_FROM_DB);
         when(locationRepository.findByTableReference(any())).thenReturn(locationOptional);
-        Location actualLocation = locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        Location actualLocation = locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
         assertEquals(ANY_LOCATION_FROM_DB, actualLocation);
     }
 
     @Test public void getOrCreateLocationReturnsNewEntrySavedInDatabase() {
         Optional<Location> emptyOptional = Optional.empty();
         when(locationRepository.findByTableReference(any())).thenReturn(emptyOptional);
-        locationService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(any());
         verify(locationRepository).save(any(Location.class));
     }
 
     @Test public void createLocationCanHandleEntriesWithoutWebsiteColumn() {
         String[] withInvalidWebsite = { "", "", "", "", "" };
-        Location createdLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
+        Location createdLocation = locationMaintenanceService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
         assertNull(createdLocation.getWebsite());
     }
 
     @Test public void createLocationSkipsInvalidUrls() {
         String[] withInvalidWebsite = { "", "", "", "", "", "invalid url" };
-        Location createdLocation = locationService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
+        Location createdLocation = locationMaintenanceService.createLocation(CORRECT_TABLEREFERENCE, withInvalidWebsite);
         assertNull(createdLocation.getWebsite());
     }
 }
