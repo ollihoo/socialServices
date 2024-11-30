@@ -6,8 +6,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URI;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -22,40 +22,31 @@ public class LocationMaintenanceService {
         this.locationRepository = locationRepository;
     }
 
-    public Location createLocation(String[] columns) {
-        Location location = new Location();
-        location.setTableReference(createTableReference(columns));
-        return updateLocation(location, columns);
-    }
+    public Location createOrUpdateLocation(String[] columns) {
+        String tableReference = createTableReference(columns);
+        Location locationFromDb = getLocation(tableReference);
+        if (locationFromDb == null) {
+            return setAndSaveLocation(columns, LocationBuilder.getInstance(null).withTableReference(tableReference));
+        } else {
+            return setAndSaveLocation(columns, LocationBuilder.getInstance(locationFromDb));
+        }
 
-    private Location updateLocation(Location location, String[] columns) {
-        location.setName(columns[COLUMN_NAME.getColum()]);
-        location.setAddress(columns[COLUMN_ADRESS.getColum()]);
-        location.setPostCode(columns[COLUMN_POSTCODE.getColum()]);
-        location.setCity(columns[COLUMN_CITY.getColum()]);
-        location.setWebsite(getWebsite(columns));
-        return location;
     }
-
-    public Location getLocation(String tableReference) {
+    private Location getLocation(String tableReference) {
         Optional<Location> locationOptional = locationRepository.findByTableReference(tableReference);
         return locationOptional.orElse(null);
     }
 
-    public Location createOrUpdateLocation(String[] columns) {
-        Location locationFromDb = getLocation(createTableReference(columns));
-        if (locationFromDb != null) {
-            updateLocation(locationFromDb, columns);
-            locationRepository.save(locationFromDb);
-            return  locationFromDb;
-        }
-        Location createdLocation = createLocation(columns);
-        locationRepository.save(createdLocation);
-        return createdLocation;
-    }
-
-    private static String createTableReference(String[] columns) {
-        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
+    private Location setAndSaveLocation(String[] columns, LocationBuilder locationBuilder) {
+        Location location = locationBuilder
+                .withName(columns[COLUMN_NAME.getColum()])
+                .withAddress(columns[COLUMN_ADRESS.getColum()])
+                .withPostCode(columns[COLUMN_POSTCODE.getColum()])
+                .withCity(columns[COLUMN_CITY.getColum()])
+                .withWebsite(getWebsite(columns))
+                .getLocation();
+        locationRepository.save(location);
+        return location;
     }
 
     private static URL getWebsite(String[] entry) {
@@ -70,6 +61,11 @@ public class LocationMaintenanceService {
             return null;
         }
     }
+
+    private static String createTableReference(String[] columns) {
+        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
+    }
+
     private static String hashString(String input) {
         MessageDigest digest;
         try {

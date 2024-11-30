@@ -26,39 +26,24 @@ class LocationMaintenanceServiceTest {
     @Mock
     private LocationRepository locationRepository;
 
-    @Test public void createLocationParsesInputCorrectly() {
-        Location createdLocation = locationMaintenanceService.createLocation(ANY_LOCATION_INPUT);
-        assertEquals(ANY_LOCATION_INPUT[1], createdLocation.getName());
-        assertEquals(ANY_LOCATION_INPUT[2], createdLocation.getAddress());
-        assertEquals(ANY_LOCATION_INPUT[3], createdLocation.getPostCode());
-        assertEquals(ANY_LOCATION_INPUT[4], createdLocation.getCity());
-        assertEquals(ANY_LOCATION_INPUT[5], createdLocation.getWebsite().toString());
-        assertEquals(CORRECT_TABLEREFERENCE, createdLocation.getTableReference());
-    }
-
-    @Test public void createLocationDoesntSavesItsInputToDatabase() {
-        Location savedLocation = locationMaintenanceService.createLocation(ANY_LOCATION_INPUT);
-        verify(locationRepository, never()).save(savedLocation);
-    }
-
-    @Test public void getOrCreateLocationCreatesATableReference() {
+    @Test public void createOrUpdateLocationCreatesATableReference() {
         Location location = locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         assertEquals(CORRECT_TABLEREFERENCE, location.getTableReference());
     }
 
-    @Test public void getOrCreateLocationUsesTableReferenceForDatabase() {
+    @Test public void createOrUpdateLocationUsesTableReferenceForDatabase() {
         locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(CORRECT_TABLEREFERENCE);
     }
 
-    @Test public void getOrCreateLocationReturnsEntryFromDatabase() {
+    @Test public void createOrUpdateLocationReturnsEntryFromDatabase() {
         Optional<Location> locationOptional = Optional.of(ANY_LOCATION_FROM_DB);
         when(locationRepository.findByTableReference(any())).thenReturn(locationOptional);
         Location actualLocation = locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         assertEquals(ANY_LOCATION_FROM_DB, actualLocation);
     }
 
-    @Test public void getOrCreateLocationReturnsNewEntrySavedInDatabase() {
+    @Test public void createOrUpdateLocationReturnsNewEntrySavedInDatabase() {
         Optional<Location> emptyOptional = Optional.empty();
         when(locationRepository.findByTableReference(any())).thenReturn(emptyOptional);
         locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
@@ -66,15 +51,15 @@ class LocationMaintenanceServiceTest {
         verify(locationRepository).save(any(Location.class));
     }
 
-    @Test public void createLocationCanHandleEntriesWithoutWebsiteColumn() {
+    @Test public void createOrUpdateLocationCanHandleEntriesWithoutWebsiteColumn() {
         String[] withInvalidWebsite = { "", "", "", "", "" };
-        Location createdLocation = locationMaintenanceService.createLocation(withInvalidWebsite);
+        Location createdLocation = locationMaintenanceService.createOrUpdateLocation(withInvalidWebsite);
         assertNull(createdLocation.getWebsite());
     }
 
-    @Test public void createLocationSkipsInvalidUrls() {
+    @Test public void createOrUpdateLocationSkipsInvalidUrls() {
         String[] withInvalidWebsite = { "", "", "", "", "", "invalid url" };
-        Location createdLocation = locationMaintenanceService.createLocation(withInvalidWebsite);
+        Location createdLocation = locationMaintenanceService.createOrUpdateLocation(withInvalidWebsite);
         assertNull(createdLocation.getWebsite());
     }
 }
