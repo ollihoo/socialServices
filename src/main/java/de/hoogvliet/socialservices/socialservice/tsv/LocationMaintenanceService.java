@@ -12,10 +12,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-import static de.hoogvliet.socialservices.socialservice.tsv.TSVDescription.*;
-
 @Service @Log4j2
 public class LocationMaintenanceService {
+    private static final int COLUMN_TIMESTAMP = 0;
+    private static final int COLUMN_NAME = 1;
+    private static final int COLUMN_ADRESS = 2;
+    private static final int COLUMN_POSTCODE = 3;
+    private static final int COLUMN_CITY = 4;
+    private static final int COLUMN_WEBSITE = 5;
     private final LocationRepository locationRepository;
 
     public LocationMaintenanceService(LocationRepository locationRepository) {
@@ -39,10 +43,10 @@ public class LocationMaintenanceService {
 
     private Location setAndSaveLocation(String[] columns, LocationBuilder locationBuilder) {
         Location location = locationBuilder
-                .withName(columns[COLUMN_NAME.getColum()])
-                .withAddress(columns[COLUMN_ADRESS.getColum()])
-                .withPostCode(columns[COLUMN_POSTCODE.getColum()])
-                .withCity(columns[COLUMN_CITY.getColum()])
+                .withName(columns[COLUMN_NAME])
+                .withAddress(columns[COLUMN_ADRESS])
+                .withPostCode(columns[COLUMN_POSTCODE])
+                .withCity(columns[COLUMN_CITY])
                 .withWebsite(getWebsite(columns))
                 .getLocation();
         locationRepository.save(location);
@@ -50,11 +54,11 @@ public class LocationMaintenanceService {
     }
 
     private static URL getWebsite(String[] entry) {
-        if (entry.length <= COLUMN_WEBSITE.getColum()) {
+        if (entry.length <= COLUMN_WEBSITE) {
             return null;
         }
         try {
-            URI uri = URI.create(entry[COLUMN_WEBSITE.getColum()]);
+            URI uri = URI.create(entry[COLUMN_WEBSITE]);
             return uri.toURL();
         } catch (IllegalArgumentException | MalformedURLException e) {
             log.warn("Please check tsv input: {}", e.getMessage());
@@ -63,7 +67,7 @@ public class LocationMaintenanceService {
     }
 
     private static String createTableReference(String[] columns) {
-        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
+        return hashString(columns[COLUMN_TIMESTAMP]);
     }
 
     private static String hashString(String input) {
