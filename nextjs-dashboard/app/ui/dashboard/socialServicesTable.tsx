@@ -2,8 +2,9 @@ import clsx from 'clsx';
 import {Category, SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
 import { fetchSocialServices} from "@/app/lib/data";
-export default async function SocialServicesTable() {
-    const socialservices = await fetchSocialServices();
+export default async function SocialServicesTable(params: any) {
+    const category: string = params?.category || '';
+    const socialservices = await fetchSocialServices(category);
     function getServiceLink(socialService: SocialService) {
         if (socialService.website != null) {
             return (

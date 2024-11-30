@@ -6,22 +6,24 @@ import CategoriesDropdown from "@/app/ui/categoriesDropdown";
 import {Category} from "@/app/lib/definitions";
 import {fetchCategories} from "@/app/lib/data";
 
-export default async function Page() {
-    const categories: Category[] = await fetchCategories();
+export default async function Page(props: { searchParams?: Promise<{ cat: string; }>;}) {
+  const searchParams = await props.searchParams;
+  const searchCategory: string = searchParams?.cat || '';
+  const availableCategories: Category[] = await fetchCategories();
 
-    return (
-        <main>
-            <h1 className={`${lusitana.className} antialiased mb-4 text-xl md:text-2xl`}>
-                Dashboard
-            </h1>
-          <div>
-            <CategoriesDropdown categories={categories} placeholder="Search categories..." />
+  return (
+      <main>
+          <h1 className={`${lusitana.className} antialiased mb-4 text-xl md:text-2xl`}>
+              Dashboard
+          </h1>
+        <div>
+          <CategoriesDropdown categories={availableCategories} />
+        </div>
+          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+              <Suspense fallback={<RevenueChartSkeleton />}>
+                  <SocialServicesTable category={searchCategory} />
+              </Suspense>
           </div>
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-                <Suspense fallback={<RevenueChartSkeleton />}>
-                    <SocialServicesTable />
-                </Suspense>
-            </div>
-        </main>
-    );
+      </main>
+  );
 }

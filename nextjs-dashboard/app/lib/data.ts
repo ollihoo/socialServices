@@ -49,7 +49,9 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchSocialServices() {
+export async function fetchSocialServices(category: string) {
+  const request= category? "?c="+category:"";
+
   function createSocialServices(input: any) {
     const resultSocialServices: SocialService[] = input.map((item: any) => {
       return {
@@ -67,17 +69,17 @@ export async function fetchSocialServices() {
 
   let res;
     try {
-       res = await fetch('http://localhost:8080/social', {
+       res = await fetch('http://localhost:8080/social'+request, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
+      const data = await res.json();
+      return createSocialServices(data);
     } catch (error) {
       console.log("SocialServices problem: ${error.message}");
       return [];
     }
-    const data = await res.json();
-    return createSocialServices(data);
 }
 
 export async function fetchCategories () {
