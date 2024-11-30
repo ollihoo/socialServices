@@ -45,7 +45,7 @@ public class TSVParser {
     }
 
     private Location getOrCreateLocation(String[] columns) {
-        Location location = locationMaintenanceService.getOrCreateLocation(columns);
+        Location location = locationMaintenanceService.createOrUpdateLocation(columns);
         locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
         return location;
     }

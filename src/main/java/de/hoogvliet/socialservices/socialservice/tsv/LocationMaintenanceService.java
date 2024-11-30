@@ -25,6 +25,10 @@ public class LocationMaintenanceService {
     public Location createLocation(String[] columns) {
         Location location = new Location();
         location.setTableReference(createTableReference(columns));
+        return updateLocation(location, columns);
+    }
+
+    private Location updateLocation(Location location, String[] columns) {
         location.setName(columns[COLUMN_NAME.getColum()]);
         location.setAddress(columns[COLUMN_ADRESS.getColum()]);
         location.setPostCode(columns[COLUMN_POSTCODE.getColum()]);
@@ -38,18 +42,20 @@ public class LocationMaintenanceService {
         return locationOptional.orElse(null);
     }
 
-    private static String createTableReference(String[] columns) {
-        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
-    }
-
-    public Location getOrCreateLocation(String[] columns) {
+    public Location createOrUpdateLocation(String[] columns) {
         Location locationFromDb = getLocation(createTableReference(columns));
         if (locationFromDb != null) {
-            return locationFromDb;
+            updateLocation(locationFromDb, columns);
+            locationRepository.save(locationFromDb);
+            return  locationFromDb;
         }
         Location createdLocation = createLocation(columns);
         locationRepository.save(createdLocation);
         return createdLocation;
+    }
+
+    private static String createTableReference(String[] columns) {
+        return hashString(columns[COLUMN_TIMESTAMP.getColum()]);
     }
 
     private static URL getWebsite(String[] entry) {

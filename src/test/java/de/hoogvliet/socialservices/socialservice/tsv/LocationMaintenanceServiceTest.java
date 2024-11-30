@@ -42,26 +42,26 @@ class LocationMaintenanceServiceTest {
     }
 
     @Test public void getOrCreateLocationCreatesATableReference() {
-        Location location = locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        Location location = locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         assertEquals(CORRECT_TABLEREFERENCE, location.getTableReference());
     }
 
     @Test public void getOrCreateLocationUsesTableReferenceForDatabase() {
-        locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(CORRECT_TABLEREFERENCE);
     }
 
     @Test public void getOrCreateLocationReturnsEntryFromDatabase() {
         Optional<Location> locationOptional = Optional.of(ANY_LOCATION_FROM_DB);
         when(locationRepository.findByTableReference(any())).thenReturn(locationOptional);
-        Location actualLocation = locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        Location actualLocation = locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         assertEquals(ANY_LOCATION_FROM_DB, actualLocation);
     }
 
     @Test public void getOrCreateLocationReturnsNewEntrySavedInDatabase() {
         Optional<Location> emptyOptional = Optional.empty();
         when(locationRepository.findByTableReference(any())).thenReturn(emptyOptional);
-        locationMaintenanceService.getOrCreateLocation(ANY_LOCATION_INPUT);
+        locationMaintenanceService.createOrUpdateLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(any());
         verify(locationRepository).save(any(Location.class));
     }
