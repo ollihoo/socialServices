@@ -27,28 +27,28 @@ public class LocationBuilder {
         return this;
     }
 
-    public LocationBuilder withName(String column) {
-        location.setName(column);
+    public LocationBuilder withName(String value) {
+        location.setName(value);
         return this;
     }
 
-    public LocationBuilder withAddress(String column) {
-        location.setAddress(column);
+    public LocationBuilder withAddress(String value) {
+        location.setAddress(value);
         return this;
     }
 
-    public LocationBuilder withPostCode(String column) {
-        location.setPostCode(column);
+    public LocationBuilder withPostCode(String value) {
+        location.setPostCode(value);
         return this;
     }
 
-    public LocationBuilder withCity(String column) {
-        location.setCity(column);
+    public LocationBuilder withCity(String value) {
+        location.setCity(value);
         return this;
     }
 
-    public LocationBuilder withWebsite(URL column) {
-        location.setWebsite(column);
+    public LocationBuilder withWebsite(URL value) {
+        location.setWebsite(value);
         return this;
     }
 
