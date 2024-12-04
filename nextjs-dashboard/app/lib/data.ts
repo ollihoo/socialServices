@@ -50,6 +50,7 @@ export async function fetchRevenue() {
 }
 
 export async function fetchSocialServices(category: string) {
+  const backend = "http://" + process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/social";
   const request= category? "?c="+category:"";
 
   function createSocialServices(input: any) {
@@ -69,15 +70,15 @@ export async function fetchSocialServices(category: string) {
 
   let res;
     try {
-       res = await fetch('http://localhost:8080/social'+request, {
+       res = await fetch(backend+request, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       const data = await res.json();
       return createSocialServices(data);
-    } catch (error) {
-      console.log("SocialServices problem: ${error.message}");
+    } catch (error: any) {
+      console.log("request problem: ", error.message);
       return [];
     }
 }
@@ -95,15 +96,16 @@ export async function fetchCategories () {
   }
 
   let result;
+  const URL = "http://" + process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/categories";
 
   try {
-    result = await fetch('http://localhost:8080/categories', {
+    result = await fetch(URL, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
-  } catch (error) {
-//    console.log("categories problem: ${error.message}");
+  } catch (error: any) {
+    console.log("categories problem: ", error.message);
     return [];
   }
   const data = await result.json();
