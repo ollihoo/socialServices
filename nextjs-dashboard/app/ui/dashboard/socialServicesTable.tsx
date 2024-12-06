@@ -2,9 +2,12 @@ import clsx from 'clsx';
 import {Category, SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
 import { fetchSocialServices} from "@/app/lib/data";
+import styles from "@/app/ui/home.module.css";
+
 export default async function SocialServicesTable(params: any) {
     const category: string = params?.category || '';
-    const socialservices = await fetchSocialServices(category);
+    const unsortedSocialservices = await fetchSocialServices(category);
+    const socialServices = unsortedSocialservices.sort((a, b) => a.name.localeCompare(b.name));
     function getServiceLink(socialService: SocialService) {
         if (socialService.website != null) {
             return (
@@ -17,11 +20,12 @@ export default async function SocialServicesTable(params: any) {
     }
 
     function showCategories(socialService: SocialService) {
+        const sortedCategories = socialService.categories.sort((a, b) => a.name.localeCompare(b.name));
         return (
-          <ul>
+          <ul className={styles.categorytag}>
               {
-                  socialService.categories.map((entry: Category) => {
-                     return (<li key={entry.id} className="text-sm font-semibold">{entry.name}</li>);
+                  sortedCategories.map((entry: Category) => {
+                     return (<li key={entry.id}>{entry.name}</li>);
                   })
               }
           </ul>
@@ -50,7 +54,7 @@ export default async function SocialServicesTable(params: any) {
                             </p>
                             {getServiceLink(socialservice)}
                         </div>
-                        <div className="md:grid-cols-2">
+                        <div className="md:grid-cols-3">
                             {showCategories(socialservice)}
                         </div>
                     </div>
@@ -63,7 +67,7 @@ export default async function SocialServicesTable(params: any) {
         <div className="flex w-full flex-col md:col-span-8">
             <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4">
                 <div className="bg-white px-6">
-                    {getListOfServices(socialservices)}
+                    {getListOfServices(socialServices)}
                 </div>
             </div>
         </div>
