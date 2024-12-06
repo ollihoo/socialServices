@@ -22,7 +22,7 @@ public class SocialServices {
     }
 
     public List<Category> getCategories() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByOrderByNameAsc();
     }
 
     public List<Location> getLocationsByCategory(int categoryId) {
