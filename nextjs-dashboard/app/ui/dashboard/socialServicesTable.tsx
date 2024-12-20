@@ -1,8 +1,8 @@
-import clsx from 'clsx';
 import {Category, SocialService} from '@/app/lib/definitions';
 import Link from "next/link";
 import { fetchSocialServices} from "@/app/lib/data";
 import styles from "@/app/ui/home.module.css";
+
 
 export default async function SocialServicesTable(params: any) {
     const category: string = params?.category || '';
@@ -34,18 +34,11 @@ export default async function SocialServicesTable(params: any) {
 
     function getListOfServices(socialServices: SocialService[]) {
         return <>
-            {socialServices.map((socialservice, i) => {
+            {socialServices.map((socialservice) => {
                 return (
-                    <div
-                        key={socialservice.id}
-                        className={clsx(
-                            'flex flex-row items-center justify-between py-4 md:grid-cols-4',
-                            {
-                                'border-t': i !== 0,
-                            },
-                        )}
-                    >
-                        <div className="md:grid-cols-2">
+                    <div key={socialservice.id}
+                        className="flex flex-row justify-between py-2 md:grid-cols-4'">
+                        <div className="flex flex-col">
                             <p className="truncate text-sm font-semibold md:text-base">
                                 {socialservice.name}
                             </p>
@@ -54,7 +47,7 @@ export default async function SocialServicesTable(params: any) {
                             </p>
                             {getServiceLink(socialservice)}
                         </div>
-                        <div className="md:grid-cols-3">
+                        <div className="flex flex-col items-center justify-center">
                             {showCategories(socialservice)}
                         </div>
                     </div>
