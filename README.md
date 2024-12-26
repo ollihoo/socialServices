@@ -16,7 +16,7 @@ To get application running:
 Do not forget to check, if your env vars are set correctly.
 
 ### Database installation
-I use postgres i a docker container. First step:
+I use postgres in a docker container. First step:
 
     cp env.template .env
 
