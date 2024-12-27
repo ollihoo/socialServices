@@ -6,7 +6,6 @@ plugins {
 
 group = 'de.hoogvliet'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -19,16 +18,17 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.4.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    implementation 'org.jsoup:jsoup:1.15.4'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.5'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'org.postgresql:postgresql'
 }
 
 tasks.named('test') {
