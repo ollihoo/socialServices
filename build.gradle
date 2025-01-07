@@ -18,13 +18,13 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.47.2.0'
+    implementation 'org.hibernate.orm:hibernate-community-dialects'
     implementation 'org.jsoup:jsoup:1.15.4'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.4.1'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'org.postgresql:postgresql'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
 

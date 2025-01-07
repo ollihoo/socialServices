@@ -1,11 +1,9 @@
 management.endpoints.web.exposure.include=metrics
 
-spring.datasource.url=jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB}
-spring.datasource.username=${POSTGRES_USER}
-spring.datasource.password=${POSTGRES_PASSWORD}
-spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=jdbc:sqlite:./socialservices.db
+spring.datasource.driver-class-name=org.sqlite.JDBC
+spring.jpa.database-platform=org.hibernate.community.dialect.SQLiteDialect
 
-# JPA-Einstellungen
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=false
 spring.jpa.open-in-view=true
