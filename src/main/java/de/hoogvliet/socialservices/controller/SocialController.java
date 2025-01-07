@@ -30,7 +30,7 @@ public class SocialController {
             }
             return socialServices.getLocationsByCategory(catId);
         }
-        return socialServices.getAllEntries();
+        return Collections.emptyList();
     }
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
