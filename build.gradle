@@ -42,7 +42,7 @@ def static runGitCommand(String command) {
     process.waitFor()
 
     if (process.exitValue() != 0) {
-        throw new GradleException("git command failed: ${error}")
+        throw new GradleException("git command failed: ${command}\n${error}")
     }
 
     return output.toString().trim()
@@ -62,7 +62,9 @@ def incrementVersion() {
     versionFile.withWriter { writer ->
         properties.store(writer, null)
     }
-    runGitCommand("git commit -m'New build with version number ${newVersion}' .")
+    def message = "New build with version number $newVersion"
+    String command = "git commit -m'$message' ."
+    runGitCommand(command)
     return newVersion
 }
 
