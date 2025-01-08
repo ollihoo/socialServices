@@ -33,3 +33,30 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def incrementVersion() {
+    def versionFile = file('version.properties')
+    Properties properties = new Properties()
+    versionFile.withReader { reader ->
+        properties.load(reader)
+    }
+    String currentVersion = properties['version'] ?: '0.0.0'
+    def (major, minor, patch) = currentVersion.split('\\.').collect { it.toInteger() }
+    patch += 1
+    String newVersion = "${major}.${minor}.${patch}"
+    properties['version'] = newVersion
+    versionFile.withWriter { writer ->
+        properties.store(writer, null)
+    }
+    return newVersion
+}
+
+if (!project.hasProperty('release')) {
+    version = file('version.properties').withReader {
+        Properties props = new Properties()
+        props.load(it)
+        props['version']
+    }
+} else {
+    version = incrementVersion()
+}
