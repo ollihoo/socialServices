@@ -34,6 +34,20 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+def static runGitCommand(String command) {
+    def process = command.execute()
+    def output = new StringBuffer()
+    def error = new StringBuffer()
+    process.consumeProcessOutput(output, error)
+    process.waitFor()
+
+    if (process.exitValue() != 0) {
+        throw new GradleException("git command failed: ${error}")
+    }
+
+    return output.toString().trim()
+}
+
 def incrementVersion() {
     def versionFile = file('version.properties')
     Properties properties = new Properties()
@@ -48,6 +62,7 @@ def incrementVersion() {
     versionFile.withWriter { writer ->
         properties.store(writer, null)
     }
+    runGitCommand("git commit -m'New build with version number ${newVersion}' .")
     return newVersion
 }
 
