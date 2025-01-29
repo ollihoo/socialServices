@@ -5,6 +5,7 @@ plugins {
 }
 
 group = 'de.hoogvliet'
+version = 0.1
 
 configurations {
     compileOnly {
@@ -32,48 +33,4 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
-}
-
-def static runGitCommand(String command) {
-    def process = command.execute()
-    def output = new StringBuffer()
-    def error = new StringBuffer()
-    process.consumeProcessOutput(output, error)
-    process.waitFor()
-
-    if (process.exitValue() != 0) {
-        throw new GradleException("git command failed: ${command}\n${error}")
-    }
-
-    return output.toString().trim()
-}
-
-def incrementVersion() {
-    def versionFile = file('version.properties')
-    Properties properties = new Properties()
-    versionFile.withReader { reader ->
-        properties.load(reader)
-    }
-    String currentVersion = properties['version'] ?: '0.0.0'
-    def (major, minor, patch) = currentVersion.split('\\.').collect { it.toInteger() }
-    patch += 1
-    String newVersion = "${major}.${minor}.${patch}"
-    properties['version'] = newVersion
-    versionFile.withWriter { writer ->
-        properties.store(writer, null)
-    }
-    def message = "New build with version number $newVersion"
-    String command = "git commit -m'$message' ."
-    runGitCommand(command)
-    return newVersion
-}
-
-if (!project.hasProperty('release')) {
-    version = file('version.properties').withReader {
-        Properties props = new Properties()
-        props.load(it)
-        props['version']
-    }
-} else {
-    version = incrementVersion()
 }

@@ -5,6 +5,9 @@ services:
   backend:
     build:
       dockerfile: Dockerfile
+      args:
+        IMAGE_TAG: ${IMAGE_TAG}
+    image: socialservice_backend:${IMAGE_TAG}
     ports:
       - "8088:8080"
 
