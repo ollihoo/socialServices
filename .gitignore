@@ -5,4 +5,3 @@ build/
 application.properties
 .env
 socialservices.db
-nextjs-dashboard/pnpm-lock.yaml

@@ -2,17 +2,6 @@ version: '3.8'
 
 services:
 
-  frontend:
-    build:
-      context: ./nextjs-dashboard
-      dockerfile: ../socialservice_client/Dockerfile
-    ports:
-      - "3100:3000"
-    environment:
-      - NODE_ENV=production
-      - BACKEND_HOST=backend
-      - BACKEND_PORT=8080
-
   backend:
     build:
       dockerfile: Dockerfile
