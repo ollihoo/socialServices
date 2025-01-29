@@ -33,8 +33,8 @@ example:
 ![IntelliJ configuration with env](./doc/applicationConfigurationIntelliJ.png)
 
 ## Frontend:
-* next.js - see [Documentation](doc/nextjsapp.md)
-* React - see [Documentation](doc/react.md)
+* next.js - see [Documentation](../socialservice_client/doc/nextjsapp.md)
+* React - see [Documentation](../socialservice_client/doc/react.md)
 
 ## Backend
 * Spring Boot with RestService

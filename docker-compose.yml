@@ -5,7 +5,7 @@ services:
   frontend:
     build:
       context: ./nextjs-dashboard
-      dockerfile: Dockerfile
+      dockerfile: ../socialservice_client/Dockerfile
     ports:
       - "3100:3000"
     environment:
