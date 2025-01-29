@@ -19,8 +19,7 @@ you can see interaction between back- and frontend:
 
     http://localhost:3100
 
-I centralize important properties in .env file. This can be used by docker,
-frontend and backend.
+I centralize  properties in .env file. This can be used by docker and backend.
 
 Unfortunately, IntelliJ doesn't include .env automatically. I decided to use a plug-in for
 this problem:
@@ -32,16 +31,12 @@ example:
 
 ![IntelliJ configuration with env](./doc/applicationConfigurationIntelliJ.png)
 
-## Frontend:
-* next.js - see [Documentation](../socialservice_client/doc/nextjsapp.md)
-* React - see [Documentation](../socialservice_client/doc/react.md)
-
 ## Backend
 * Spring Boot with RestService
 * Data are stored statically at the moment, it's the easiest way…
 * … but I use a database to simplify searches
 * /social delivers a list of saved locations
-* /catefory delivers a list of categories used for locations
+* /category delivers a list of categories used for locations
 * I am using actuator for some simple monitoring issues
 
 ### Monitoring
