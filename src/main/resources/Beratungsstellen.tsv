@@ -7,8 +7,8 @@ Zeitstempel	Name	Adresse	PLZ	Ort	Website	Spalte 6
 02.11.2024 20:35:36	Mieterschutzbund Berlin e.V. - Wedding	Müllerstraße 53	13349	Berlin	http://www.mieterschutzbund-berlin.de/	Mieterberatung
 02.11.2024 20:38:16	Frauenzukunft e.V.	Genter Straße 74	13353	Berlin	https://www.frauenzukunft-ev.de/	Frauen
 02.11.2024 20:39:13	interbüro	Genter Str. 60	13353	Berlin	https://interbrigadas.org/	Treffpunkt
-02.11.2024 21:20:04	[U25] Online Suizidprävention	Große Hamburger Straße 18	10115	Berlin	u25@caritas- berlin.de	Einsamkeit, Traurigkeit & Verzweiflung, Kinder & Jugendliche
-02.11.2024 21:21:19	Allgemeiner Sozialdienst	Müllerstr. 146	13353	Berlin	https://www.berlin.de/ba-mitte/politik-und-verwaltung/aemter/amt-fuer-soziales/sozialdienst/	Allgemeine Sozialberatung
+02.11.2024 21:20:04	[U25] Online Suizidprävention	Große Hamburger Straße 18	10115	Berlin	https://www.u25-berlin.de/	Einsamkeit, Traurigkeit & Verzweiflung, Kinder & Jugendliche
+02.11.2024 21:21:19	Allgemeiner Sozialdienst	Müllerstr. 146	13353	Berlin	https://www.berlin.de/ba-mitte/politik-und-verwaltung/aemter/amt-fuer-soziales/sozialdienst/	Allgemeine Sozialberatung, Einsamkeit, Kinder & Jugendliche
 02.11.2024 21:22:30	Ambulante Suchtberatung Mitte	Stromstraße 47	10551	Berlin	https://vistaberlin.de/	Alkohol & Drogen
 02.11.2024 21:23:48	ANODE 	Utrechter Str. 29	13347	Berlin	https://www.kbsev.org/web/tagesstaette-anode.php	Angst & Zwänge, Traurigkeit & Verzweiflung, Beziehung zu anderen Menschen
 02.11.2024 21:25:24	AWO Frauenladen	Groninger Str. 28	13347	Berlin	https://awo-mitte.de/frauen/	Frauen, Psychosoziale Beratung, Rechtsberatung, Menschen mit Migrationshintergrund
@@ -29,7 +29,7 @@ Zeitstempel	Name	Adresse	PLZ	Ort	Website	Spalte 6
 03.11.2024 15:14:23	Schwulenberatung Berlin	Wilhelmstraße 115	10963	Berlin	https://www.schwulenberatungberlin.de/index.php	LGBTQIA*, Psychosoziale Beratung, Rechtsberatung, Schwul*
 03.11.2024 15:16:24	TransInterQueer	Gürtelstraße 35	10247	Berlin	https://www.transinterqueer.org/	LGBTQIA*, Trans*
 03.11.2024 15:17:14	Projekt Trans*Sexworks	Gürtelstraße 35	10247	Berlin	https://www.transinterqueer.org/themen/trans-und-sexarbeit/	LGBTQIA*, STIs, Psychosoziale Beratung, Rechtsberatung, Sexarbeit, Trans*
-03.11.2024 15:18:26	GLADT e.V.	Lützowstraße 28	10785	Berlin	https://www.gladt.de/	LGBTQIA*, Menschen mit Migrationshintergrund, Schwul*, Lesbisch*
+03.11.2024 15:18:26	GLADT e.V.	Lützowstraße 28	10785	Berlin	https://www.gladt.de/	LGBTQIA*, Menschen mit Migrationshintergrund, Schwul*, Lesbisch*, Psychosoziale Beratung
 03.11.2024 15:19:24	BiBerlin e.V.	Am Friedrichshain 9	10407	Berlin	https://biberlin.de/	Frauen, LGBTQIA*, Männer, Treffpunkt
 03.11.2024 15:20:15	Regenbogenfamilienzentrum	Cheruskerstraße 22	10829	Berlin	https://www.regenbogenfamilienzentrum.de/	Familienberatung, LGBTQIA*
 03.11.2024 15:21:16	Queerhome*	Geusenstraße 2	10317	Berlin	https://www.queerhome.de/	LGBTQIA*, Mieterberatung
@@ -65,3 +65,8 @@ Zeitstempel	Name	Adresse	PLZ	Ort	Website	Spalte 6
 05.12.2024 10:32:53	Die Linke hilft (Lichtenberg)	Zingster Straße 12	10315	Berlin	https://dielinke.berlin/beratung/	Allgemeine Sozialberatung, Rechtsberatung
 05.12.2024 10:35:21	Die Linke hilft (Mitte)	Brunnenstr. 145	10115	Berlin	https://dielinke.berlin/beratung/	Allgemeine Sozialberatung, Mieterberatung
 05.12.2024 10:36:41	Rechts- und Sozialberatung	Malplaquetstraße 12	13347	Berlin	https://dielinke.berlin/beratung/	Allgemeine Sozialberatung, Rechtsberatung
+01.02.2025 13:37:34	Berliner Mieterverein e.V.	Müllerstraße 135	13349	Berlin	https://www.berliner-mieterverein.de/wir-ueber-uns/beratungszentren.htm#MuellerstrAnker	Mieterberatung
+01.02.2025 13:38:52	Berliner Mieterverein	Hobrechtstraße 28	12047	Berlin	https://www.berliner-mieterverein.de/wir-ueber-uns/beratungszentren.htm#HermannplatzAnker	Mieterberatung
+01.02.2025 13:40:11	Berliner Mieterverein	Schönhauser Allee 134 B	10437	Berlin	https://www.berliner-mieterverein.de/wir-ueber-uns/beratungszentren.htm#SchoenhauserAnker	Mieterberatung
+01.02.2025 13:41:35	Berliner Mieterverein	Spichernstraße 1	10777	Berlin	https://www.berliner-mieterverein.de/wir-ueber-uns/beratungszentren.htm#SpichernstrAnker	Mieterberatung
+03.02.2025 08:53:49	Queersupport	Feurigstr. 54	10827	Berlin	https://queersupport.de/about	Kinder & Jugendliche, LGBTQIA*, Lesbisch*, STIs, Non-Binär, Schwul*, Trans*, Treffpunkt
