@@ -15,3 +15,20 @@ is activated, it's the easiest way to see, if metric does work and how long this
 application fails with this in-memory-approach, so it's better to measure as soon as possible.
 
 # docker build
+
+## set recent tag
+Go to file **.env** und **update entry IMG_TAG** to appropriate version.
+This value is automatically used in docker compose.
+
+## Build image
+
+    ./gradlew build
+    docker compose build
+
+On MacOS:
+
+    docker buildx build --platform=linux/amd64 -t ${DOCKER_USER}/socialservice_backend:${IMAGE_TAG} .
+
+## push it to the hub.docker.com
+
+    docker push ${DOCKER_USER}/socialservice_backend:${IMAGE_TAG}

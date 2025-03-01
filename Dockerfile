@@ -1,6 +1,5 @@
 FROM eclipse-temurin:23-alpine
-ARG IMAGE_TAG
-ARG JAR_FILE=./build/libs/socialServices-${IMAGE_TAG}.jar
+ARG JAR_FILE=./build/libs/socialServices-0.1.jar
 
 WORKDIR /app
 COPY ${JAR_FILE} ./app.jar
