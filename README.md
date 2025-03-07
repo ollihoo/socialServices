@@ -19,7 +19,7 @@ you can see interaction between back- and frontend:
 
     http://localhost:3100
 
-I centralize  properties in .env file. This can be used by docker and backend.
+I've centralized properties in .env file. This can be used by docker and backend.
 
 Unfortunately, IntelliJ doesn't include .env automatically. I decided to use a plug-in for
 this problem:
