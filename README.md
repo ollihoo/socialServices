@@ -33,5 +33,8 @@ example:
 
 ## More Information
 
-* https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot
+### OAS 3.0 and API documentation
+* https://springdoc.org/
+* [Compatability Mode](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot)
 * to verify that API doc works: http://localhost:8080/v3/api-docs
+* Swagger-UI: http://localhost:8080/swagger-ui/index.html
