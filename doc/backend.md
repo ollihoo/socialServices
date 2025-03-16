@@ -32,3 +32,17 @@ On MacOS:
 ## push it to the hub.docker.com
 
     docker push ${DOCKER_USER}/socialservice_backend:${IMAGE_TAG}
+
+## RESULT
+
+All this experience is bundled in the script
+
+[create_release_with_docker.sh](../create_release_with_docker.sh)
+
+It contains a script that automatically builds, creates a docker and pushes it to the docker hub.
+It uses a generated tag number, containing date and time of the build.
+
+
+## How to filter the latest tag
+
+    curl https://hub.docker.com/v2/repositories/ollihoo/socialservice_backend/tags/ | jq '.results[] | .name' | sort -r
