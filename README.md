@@ -31,4 +31,7 @@ example:
 
 ![IntelliJ configuration with env](./doc/applicationConfigurationIntelliJ.png)
 
-## Backend
+## More Information
+
+* https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot
+* to verify that API doc works: http://localhost:8080/v3/api-docs

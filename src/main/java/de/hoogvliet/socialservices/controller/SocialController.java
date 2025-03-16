@@ -3,6 +3,7 @@ package de.hoogvliet.socialservices.controller;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -19,6 +20,7 @@ public class SocialController {
 
     @RequestMapping(value = "/social", method = RequestMethod.GET)
     @ResponseBody
+    @ResponseStatus(code = HttpStatus.OK)
     public List<Location> getSocialServiceEntities(
             @RequestParam(value = "c", required = false) String categoryId) {
         if (categoryId != null) {
@@ -34,6 +36,7 @@ public class SocialController {
     }
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
+    @ResponseStatus(code = HttpStatus.OK)
     public List<Category> getCategories() {
         return socialServices.getCategories();
     }
