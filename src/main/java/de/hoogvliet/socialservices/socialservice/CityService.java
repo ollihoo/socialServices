@@ -7,7 +7,7 @@ import java.util.Optional;
 @Service
 public class CityService {
 
-    private CityRepository cityRepository;
+    private final CityRepository cityRepository;
 
     public CityService(CityRepository cityRepository) {
         this.cityRepository = cityRepository;
