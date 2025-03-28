@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.Any;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -17,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SocialServicesTest {
-    private List<Location> ANY_LOCATION_LIST = Collections.emptyList();
+    private final List<Location> ANY_LOCATION_LIST = Collections.emptyList();
 
     @InjectMocks
     private SocialServices socialServices;
