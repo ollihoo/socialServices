@@ -28,22 +28,22 @@ public class LocationBuilder {
     }
 
     public LocationBuilder withName(String value) {
-        location.setName(value);
+        location.setName(value.trim());
         return this;
     }
 
     public LocationBuilder withAddress(String value) {
-        location.setAddress(value);
+        location.setAddress(value.trim());
         return this;
     }
 
     public LocationBuilder withPostCode(String value) {
-        location.setPostCode(value);
+        location.setPostCode(value.trim());
         return this;
     }
 
     public LocationBuilder withCity(String value) {
-        location.setCity(value);
+        location.setCity(value.trim());
         return this;
     }
 

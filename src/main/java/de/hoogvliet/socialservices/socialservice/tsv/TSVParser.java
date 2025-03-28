@@ -1,7 +1,9 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
+import de.hoogvliet.socialservices.socialservice.CityService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -9,17 +11,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-@Service
+@Service  @Log4j2
 public class TSVParser {
     public static final String TSV_RESOURCE = "Beratungsstellen.tsv";
     private final LocationMaintenanceService locationMaintenanceService;
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
+    private final CityService cityService;
 
-    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService) {
+    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService, CityService cityService) {
         this.locationMaintenanceService = locationMaintenanceService;
         this.categoryParser = tsvCategoryParser;
         this.locationCategoryService = locationCategoryService;
+        this.cityService = cityService;
     }
 
     public List<Location> getAllEntriesFromTSV() {
@@ -33,7 +37,8 @@ public class TSVParser {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Can't find file that contains data ({}).", TSV_RESOURCE);
+            throw new RuntimeException(e);
         }
         return locations;
     }
@@ -46,6 +51,7 @@ public class TSVParser {
 
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationMaintenanceService.createOrUpdateLocation(columns);
+        cityService.saveCity(location.getCity());
         locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
         return location;
     }
