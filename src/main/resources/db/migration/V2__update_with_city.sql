@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS city
+(
+    id   BIGINT NOT NULL,
+    name VARCHAR(255),
+    CONSTRAINT pk_city PRIMARY KEY (id)
+);
