@@ -9,32 +9,9 @@ Make a copy of env.template with the most important env vars:
 
 To get backend application running:
 
-    cp application.properties.template application.properties
+    cp application.yml.template application.yml
 
-With
-
-    docker-compose up -d
-
-you can see interaction between back- and frontend:
-
-    http://localhost:3100
-
-I've centralized properties in .env file. This can be used by docker and backend.
-
-Unfortunately, IntelliJ doesn't include .env automatically. I decided to use a plug-in for
-this problem:
-
-    https://plugins.jetbrains.com/plugin/7861-envfile
-
-To use this plugin, go to "Edit Configurations…" and to the start of your application. See this
-example:
-
-![IntelliJ configuration with env](./doc/applicationConfigurationIntelliJ.png)
+Start directly with [SocialServicesApplication.java](src/main/java/de/hoogvliet/socialservices/SocialServicesApplication.java)
 
 ## More Information
-
-### OAS 3.0 and API documentation
-* https://springdoc.org/
-* [Compatability Mode](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot)
-* to verify that API doc works: http://localhost:8080/v3/api-docs
-* Swagger-UI: http://localhost:8080/swagger-ui/index.html
+* [Development Information](doc/development.md)
