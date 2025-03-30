@@ -1,0 +1,18 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics
+
+spring:
+  datasource:
+    url: "jdbc:sqlite:./socialservices.db"
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    show-sql: false
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+  flyway:
+    baseline-on-migrate: true

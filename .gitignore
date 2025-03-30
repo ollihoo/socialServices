@@ -2,6 +2,6 @@
 .gradle
 .DS_Store
 build/
-application.properties
+application.yml
 .env
 socialservices.db
