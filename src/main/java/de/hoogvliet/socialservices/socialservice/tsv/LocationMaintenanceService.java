@@ -29,7 +29,8 @@ public class LocationMaintenanceService {
     public Location createOrUpdateLocation(String[] columns) {
         String tableReference = createTableReference(columns);
         Location locationFromDb = getLocation(tableReference);
-        return setAndSaveLocation(columns, LocationBuilder.getInstance(locationFromDb));
+        LocationBuilder builder = LocationBuilder.getInstance(locationFromDb).withTableReference(tableReference);
+        return setAndSaveLocation(columns, builder);
     }
 
     private Location getLocation(String tableReference) {

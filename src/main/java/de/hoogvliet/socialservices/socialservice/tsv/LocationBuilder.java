@@ -1,8 +1,11 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Location;
+import lombok.Getter;
+
 import java.net.URL;
 
+@Getter
 public class LocationBuilder {
 
     private final Location location;
@@ -50,10 +53,6 @@ public class LocationBuilder {
     public LocationBuilder withWebsite(URL value) {
         location.setWebsite(value);
         return this;
-    }
-
-    public Location getLocation() {
-        return location;
     }
 
 }
