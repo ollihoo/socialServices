@@ -24,4 +24,10 @@ public class Location {
     @JsonIgnore
     @OneToMany(mappedBy = "location")
     private List<LocationCategory> locationCategories = new ArrayList<>();
+
+    public List<Category> getCategories() {
+        List<Category> categories = new ArrayList<>();
+        locationCategories.forEach(lc -> categories.add(lc.getCategory()));
+        return categories;
+    }
 }
