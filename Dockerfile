@@ -6,4 +6,4 @@ COPY ${JAR_FILE} ./app.jar
 RUN mkdir conf
 COPY src/main/resources/application.yml.template ./conf/application.yml
 
-ENTRYPOINT ["java", "-Dspring.config.location=/app/conf/application.properties","-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Dspring.config.location=/app/conf/application.yml","-jar", "/app/app.jar"]
