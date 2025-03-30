@@ -20,7 +20,7 @@ class LocationTest {
 
         List<Category> actualCategories = location.getCategories();
 
-        assertEquals("testcat", actualCategories.getFirst().getName());
+        assertEquals("testcat", actualCategories.get(0).getName());
     }
 
 
