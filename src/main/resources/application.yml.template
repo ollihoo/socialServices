@@ -3,6 +3,15 @@ management:
     web:
       exposure:
         include: metrics
+  influx:
+    metrics:
+      export:
+        enabled: false
+        db: ${INFLUXDB_DB}
+        uri: ${INFLUXDB_URI}
+        org: ${INFLUXDB_ORG}
+        bucket: ${INFLUXDB_BUCKET}
+        token: ${INFLUXDB_TOKEN}
 
 spring:
   datasource:
