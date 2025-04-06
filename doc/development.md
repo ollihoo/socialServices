@@ -7,8 +7,6 @@
 * /category delivers a list of categories used for locations
 * I am using actuator for some simple monitoring issues
 
-
-
 ## Working with .env
 I've centralized properties in .env file. This can be used by docker and backend.
 
