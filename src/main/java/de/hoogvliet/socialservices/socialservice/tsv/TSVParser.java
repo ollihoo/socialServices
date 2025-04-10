@@ -5,7 +5,6 @@ import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -36,23 +35,21 @@ public class TSVParser {
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
         String line;
-        try {
-            BufferedReader br = openReader();
+
+        try (BufferedReader br = openReader()) {
             while ((line = br.readLine()) != null) {
-                if (! line.startsWith("Zeitstempel")) {
+                if (!line.startsWith("Zeitstempel")) {
                     locations.add(getOrCreateLocation(line.split("\t")));
                 }
             }
         } catch (IOException e) {
             log.warn("Can't find file that contains data ({}).", TSV_RESOURCE);
-            // throw new RuntimeException(e);
         }
         return locations;
     }
 
     private BufferedReader openReader() throws IOException {
         Resource resource = resourceLoader.getResource(TSV_RESOURCE);
-        // ClassPathResource resource = new ClassPathResource(TSV_RESOURCE);
         InputStreamReader reader = new InputStreamReader(resource.getInputStream());
         return new BufferedReader(reader);
     }
