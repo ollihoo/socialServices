@@ -15,7 +15,7 @@ management:
 
 spring:
   datasource:
-    url: "jdbc:sqlite:./socialservices.db"
+    url: "jdbc:sqlite:./docker/socialservices/socialservices.db"
     driver-class-name: org.sqlite.JDBC
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
@@ -25,3 +25,7 @@ spring:
       ddl-auto: update
   flyway:
     baseline-on-migrate: true
+
+application:
+  tsv:
+    path: file:./docker/socialservices/input/Beratungsstellen.tsv

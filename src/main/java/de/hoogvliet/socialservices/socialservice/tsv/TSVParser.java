@@ -4,7 +4,10 @@ import de.hoogvliet.socialservices.socialservice.CityService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +16,21 @@ import java.util.*;
 
 @Service  @Log4j2
 public class TSVParser {
-    public static final String TSV_RESOURCE = "Beratungsstellen.tsv";
+    private final ResourceLoader resourceLoader;
+    @Value("${application.tsv.path}")
+    private String TSV_RESOURCE;
+
     private final LocationMaintenanceService locationMaintenanceService;
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
     private final CityService cityService;
 
-    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService, CityService cityService) {
+    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService, CityService cityService, ResourceLoader resourceLoader) {
         this.locationMaintenanceService = locationMaintenanceService;
         this.categoryParser = tsvCategoryParser;
         this.locationCategoryService = locationCategoryService;
         this.cityService = cityService;
+        this.resourceLoader = resourceLoader;
     }
 
     public List<Location> getAllEntriesFromTSV() {
@@ -38,13 +45,14 @@ public class TSVParser {
             }
         } catch (IOException e) {
             log.warn("Can't find file that contains data ({}).", TSV_RESOURCE);
-            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         }
         return locations;
     }
 
-    private static BufferedReader openReader() throws IOException {
-        ClassPathResource resource = new ClassPathResource(TSV_RESOURCE);
+    private BufferedReader openReader() throws IOException {
+        Resource resource = resourceLoader.getResource(TSV_RESOURCE);
+        // ClassPathResource resource = new ClassPathResource(TSV_RESOURCE);
         InputStreamReader reader = new InputStreamReader(resource.getInputStream());
         return new BufferedReader(reader);
     }
