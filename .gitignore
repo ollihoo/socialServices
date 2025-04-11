@@ -2,6 +2,7 @@
 .gradle
 .DS_Store
 build/
-application.yml
+src/main/resources/application.yml
+docker/socialservices/socialservices.db
+docker/socialservices/input/Beratungsstellen.tsv
 .env
-socialservices.db
