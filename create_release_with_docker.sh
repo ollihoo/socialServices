@@ -18,6 +18,7 @@ APP_NAME=socialservice_backend
 
 if [ "$DEPLOY" = "true" ]; then
   ./gradlew build && docker buildx build --platform linux/amd64 -t ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} .
+  docker buildx build --platform linux/arm64 -t ${DOCKER_USER}/${APP_NAME}:arm_${IMAGE_TAG} .
 else
   ./gradlew build && docker build -t ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} .
 fi
@@ -31,6 +32,7 @@ fi
 
 if [ "$DEPLOY" = "true" ]; then
   docker push ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG}
+  docker push ${DOCKER_USER}/${APP_NAME}:arm_${IMAGE_TAG}
   if [ $? -eq 0 ]; then
       endtime=$(date +%s)
       delta=$((endtime - starttime))
