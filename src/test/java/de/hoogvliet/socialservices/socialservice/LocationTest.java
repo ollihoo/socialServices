@@ -23,7 +23,6 @@ class LocationTest {
         assertEquals("testcat", actualCategories.get(0).getName());
     }
 
-
     private LocationCategory createLocationCategory(Category category) {
         LocationCategory locationCategory = new LocationCategory();
         locationCategory.setId(2L);
