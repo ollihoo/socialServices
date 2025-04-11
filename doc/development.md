@@ -1,14 +1,20 @@
 # Development environment
 
+## Enivronment
 * Spring Boot with RestService
-* Data are stored statically at the moment, it's the easiest way…
-* … but I use a database to simplify searches
+* Data input is a csv that is filled with Google Forms. The output can be downloaded as tsv.
+* At the moment, this project uses SQLite as database
+* I am using actuator for some simple monitoring issues
+* swagger is installed
+
+## The API
+
+* see Swagger-UI: http://localhost:8080/swagger-ui/index.html
 * /social delivers a list of saved locations
 * /category delivers a list of categories used for locations
-* I am using actuator for some simple monitoring issues
 
 ## Working with .env
-I've centralized properties in .env file. This can be used by docker and backend.
+This project uses centralized properties in .env file. This can be used by docker and backend.
 
 Unfortunately, IntelliJ doesn't include .env automatically. I decided to use a plug-in for
 this problem:
@@ -21,9 +27,9 @@ example:
 ![IntelliJ configuration with env](./applicationConfigurationIntelliJ.png)
 
 ## CI/CD
-I use github actions for automatic deployment.
+The project uses github actions for automatic deployment.
 
-In the github project online , all variables are defined in section
+In the github project, there are some secret variables defined in section
 
     Settings -> Secrets and vartiables -> Actions
 
@@ -33,18 +39,13 @@ The workflows themselves are saved [here](../.github/workflows)
 
     curl https://hub.docker.com/v2/repositories/ollihoo/socialservice_backend/tags/ | jq '.results[] | .name' | sort -r
 
-## docker
+### docker
 This workflow is automated in script [create_release_with_docker.sh](../create_release_with_docker.sh).
 
-On MacOS:
-Don't forget to use the right platform when you work on MacOS:
-
-    docker buildx build --platform=linux/amd64 -t ${DOCKER_USER}/socialservice_backend:${IMAGE_TAG} .
-
+It builds to images on main, that are compatible with linux and MacOS. Look at this script for details. 
 
 ## Database
-See...
-* [Flyway](./flyway.md)
+To update the database, this prject uses [Flyway](./flyway.md).
 
 ## Monitoring
 
@@ -53,11 +54,19 @@ See...
 is activated, it's the easiest way to see, if metric does work and how long this app needs. I don't know when this
 application fails with this in-memory-approach, so it's better to measure as soon as possible.
 
+To verify that API doc works: http://localhost:8080/v3/api-docs
+
+In the future, we can add an influxdb instance to make metrics visible. 
 
 ## More Information
 
 ### OAS 3.0 and API documentation
 * https://springdoc.org/
 * [Compatability Mode](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot)
-* to verify that API doc works: http://localhost:8080/v3/api-docs
-* Swagger-UI: http://localhost:8080/swagger-ui/index.html
+
+
+
+
+
+
+KRkpSQuUfskkUOSG3X6VGEJnJfauVrPx5Wn9YU1_qGglJsIhGuxME8hNWJ3VdoCLn-XWlxgeDbq4IPPwLPbl-w==
