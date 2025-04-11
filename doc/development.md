@@ -41,22 +41,13 @@ The workflows themselves are saved [here](../.github/workflows)
 
 ### docker
 This workflow is automated in script [create_release_with_docker.sh](../create_release_with_docker.sh).
-
 It builds to images on main, that are compatible with linux and MacOS. Look at this script for details. 
 
 ## Database
-To update the database, this prject uses [Flyway](./flyway.md).
+To update the database, this project uses [Flyway](./flyway.md).
 
 ## Monitoring
-
-    http://localhost:8088/actuator/metrics
-
-is activated, it's the easiest way to see, if metric does work and how long this app needs. I don't know when this
-application fails with this in-memory-approach, so it's better to measure as soon as possible.
-
-To verify that API doc works: http://localhost:8080/v3/api-docs
-
-In the future, we can add an influxdb instance to make metrics visible. 
+see [Monitoring](monitoring.md).
 
 ## More Information
 
