@@ -54,10 +54,3 @@ see [Monitoring](monitoring.md).
 ### OAS 3.0 and API documentation
 * https://springdoc.org/
 * [Compatability Mode](https://springdoc.org/#what-is-the-compatibility-matrix-of-springdoc-openapi-with-spring-boot)
-
-
-
-
-
-
-KRkpSQuUfskkUOSG3X6VGEJnJfauVrPx5Wn9YU1_qGglJsIhGuxME8hNWJ3VdoCLn-XWlxgeDbq4IPPwLPbl-w==
