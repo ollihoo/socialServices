@@ -5,7 +5,9 @@ import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,24 +18,22 @@ public class SocialController {
 
     @GetMapping("/social")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c", required = false) String categoryId) {
+            @RequestParam(value = "c", required = false) Integer categoryId) {
         if (categoryId != null) {
-            int catId;
-            try {
-                catId = Integer.parseInt(categoryId);
-            } catch (NumberFormatException e) {
-                return Collections.emptyList();
-            }
-            return socialServices.getLocationsByCategory(catId);
+            return socialServices.getLocationsByCategory(categoryId);
         }
         return Collections.emptyList();
     }
     @GetMapping("/categories")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<Category> getCategories() {
         return socialServices.getCategories();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String error = "The parameter you entered is invalid.";
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
