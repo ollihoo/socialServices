@@ -3,6 +3,7 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 import de.hoogvliet.socialservices.socialservice.CityService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-@Service  @Log4j2
+@Service  @Log4j2 @RequiredArgsConstructor
 public class TSVParser {
     private final ResourceLoader resourceLoader;
     @Value("${application.tsv.path}")
@@ -23,14 +24,6 @@ public class TSVParser {
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
     private final CityService cityService;
-
-    public TSVParser(LocationMaintenanceService locationMaintenanceService, TSVCategoryParser tsvCategoryParser, LocationCategoryService locationCategoryService, CityService cityService, ResourceLoader resourceLoader) {
-        this.locationMaintenanceService = locationMaintenanceService;
-        this.categoryParser = tsvCategoryParser;
-        this.locationCategoryService = locationCategoryService;
-        this.cityService = cityService;
-        this.resourceLoader = resourceLoader;
-    }
 
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
