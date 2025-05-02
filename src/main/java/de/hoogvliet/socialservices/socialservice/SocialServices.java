@@ -8,7 +8,6 @@ import java.util.List;
 @Service @Log4j2 @RequiredArgsConstructor
 public class SocialServices {
     private final CategoryRepository categoryRepository;
-    private final LocationRepository locationRepository;
     private final LocationCategoryRepository locationCategoryRepository;
 
     public List<Category> getCategories() {

@@ -3,7 +3,6 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 @Component @RequiredArgsConstructor
 public class TSVCategoryParser {
     private static final int COLUMN_CATEGORIES = 6;
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<Category> getOrCreateCategories(String[] entry) {
         List<Category> categories = new ArrayList<>();
