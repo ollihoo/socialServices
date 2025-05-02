@@ -1,9 +1,10 @@
 package de.hoogvliet.socialservices.controller;
 
-import de.hoogvliet.socialservices.socialservice.SocialServices;
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
+import de.hoogvliet.socialservices.socialservice.SocialServices;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Collections;
 import java.util.List;
 
-@RestController@RequiredArgsConstructor
+@RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
     private final SocialServices socialServices;
 
@@ -33,6 +34,7 @@ public class SocialController {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.warn(ex.getMessage());
         String error = "The parameter you entered is invalid.";
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
