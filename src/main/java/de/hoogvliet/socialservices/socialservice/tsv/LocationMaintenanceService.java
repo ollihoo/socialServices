@@ -2,6 +2,7 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
-@Service @Log4j2
+@Service @Log4j2 @RequiredArgsConstructor
 public class LocationMaintenanceService {
     private static final int COLUMN_TIMESTAMP = 0;
     private static final int COLUMN_NAME = 1;
@@ -21,10 +22,6 @@ public class LocationMaintenanceService {
     private static final int COLUMN_CITY = 4;
     private static final int COLUMN_WEBSITE = 5;
     private final LocationRepository locationRepository;
-
-    public LocationMaintenanceService(LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
-    }
 
     public Location createOrUpdateLocation(String[] columns) {
         String tableReference = createTableReference(columns);

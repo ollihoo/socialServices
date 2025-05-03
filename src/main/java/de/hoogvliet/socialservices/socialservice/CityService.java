@@ -1,17 +1,13 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service @RequiredArgsConstructor
 public class CityService {
-
     private final CityRepository cityRepository;
-
-    public CityService(CityRepository cityRepository) {
-        this.cityRepository = cityRepository;
-    }
 
     public City saveCity(String cityName) {
         Optional<City> cityByName = cityRepository.findByName(cityName);

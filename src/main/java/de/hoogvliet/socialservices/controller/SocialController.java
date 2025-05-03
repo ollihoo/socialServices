@@ -1,37 +1,29 @@
 package de.hoogvliet.socialservices.controller;
 
-import de.hoogvliet.socialservices.socialservice.SocialServices;
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.Location;
+import de.hoogvliet.socialservices.socialservice.SocialServices;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Collections;
 import java.util.List;
 
-@RestController
+@RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
-
     private final SocialServices socialServices;
 
-    public SocialController(SocialServices socialServices) {
-        this.socialServices = socialServices;
-    }
-
-    @RequestMapping(value = "/social", method = RequestMethod.GET)
+    @GetMapping("/social")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c", required = false) String categoryId) {
+            @RequestParam(value = "c", required = false) Integer categoryId) {
         if (categoryId != null) {
-            int catId;
-            try {
-                catId = Integer.parseInt(categoryId);
-            } catch (NumberFormatException e) {
-                return Collections.emptyList();
-            }
-            return socialServices.getLocationsByCategory(catId);
+            return socialServices.getLocationsByCategory(categoryId);
         }
         return Collections.emptyList();
     }
@@ -54,9 +46,8 @@ public class SocialController {
         return Collections.emptyList();
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @GetMapping("/categories")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<Category> getCategories() {
         return socialServices.getCategories();
     }
@@ -66,5 +57,12 @@ public class SocialController {
     @ResponseStatus(code = HttpStatus.OK)
     public List<City> getCities() {
         return socialServices.getCities();
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        log.warn(ex.getMessage());
+        String error = "The parameter you entered is invalid.";
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }
