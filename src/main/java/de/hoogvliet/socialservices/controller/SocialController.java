@@ -28,9 +28,8 @@ public class SocialController {
         return Collections.emptyList();
     }
 
-    @RequestMapping(value = "/social/city", method=RequestMethod.GET)
+    @GetMapping(value = "/social/city")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<Location> getSocialServiceCityEntities(
             @RequestParam(value = "ct", required = false) String cityId) {
         if (cityId != null) {
@@ -52,9 +51,8 @@ public class SocialController {
         return socialServices.getCategories();
     }
 
-    @RequestMapping(value = "/cities", method = RequestMethod.GET)
+    @GetMapping(value = "/cities")
     @ResponseBody
-    @ResponseStatus(code = HttpStatus.OK)
     public List<City> getCities() {
         return socialServices.getCities();
     }
