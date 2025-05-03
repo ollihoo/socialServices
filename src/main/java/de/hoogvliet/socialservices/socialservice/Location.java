@@ -30,4 +30,14 @@ public class Location {
         locationCategories.forEach(lc -> categories.add(lc.getCategory()));
         return categories;
     }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<LocationCity> locationCities = new ArrayList<>();
+
+    public List<City> getCities() {
+        List<City> cities = new ArrayList<>();
+        locationCities.forEach(lc -> cities.add(lc.getCity()));
+        return cities;
+    }
 }

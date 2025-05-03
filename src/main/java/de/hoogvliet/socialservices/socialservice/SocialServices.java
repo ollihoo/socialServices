@@ -7,14 +7,19 @@ import java.util.List;
 @Service @Log4j2
 public class SocialServices {
     private final CategoryRepository categoryRepository;
+    private final CityRepository cityRepository;
     private final LocationRepository locationRepository;
     private final LocationCategoryRepository locationCategoryRepository;
+    private final LocationCityRepository locationCityRepository;
     public SocialServices(CategoryRepository categoryRepository,
+                          CityRepository cityRepository,
                           LocationRepository locationRepository,
-                          LocationCategoryRepository locationCategoryRepository) {
+                          LocationCategoryRepository locationCategoryRepository, LocationCityRepository locationCityRepository) {
         this.categoryRepository = categoryRepository;
+        this.cityRepository = cityRepository;
         this.locationRepository = locationRepository;
         this.locationCategoryRepository = locationCategoryRepository;
+        this.locationCityRepository = locationCityRepository;
     }
 
     public List<Location> getAllEntries() {
@@ -25,7 +30,15 @@ public class SocialServices {
         return categoryRepository.findAllByOrderByNameAsc();
     }
 
+    public List<City> getCities() {
+        return cityRepository.findAll();
+    }
+
     public List<Location> getLocationsByCategory(int categoryId) {
         return locationCategoryRepository.findLocationsByCategoryId(categoryId);
+    }
+
+    public List<Location> getLocationsByCity(int cityId) {
+        return  locationCityRepository.findLocationsByCityId(cityId);
     }
 }

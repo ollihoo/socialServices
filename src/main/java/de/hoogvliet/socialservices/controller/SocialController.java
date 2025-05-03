@@ -2,6 +2,7 @@ package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import de.hoogvliet.socialservices.socialservice.Category;
+import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.Location;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,36 @@ public class SocialController {
         }
         return Collections.emptyList();
     }
+
+    @RequestMapping(value = "/social/city", method=RequestMethod.GET)
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<Location> getSocialServiceCityEntities(
+            @RequestParam(value = "ct", required = false) String cityId) {
+        if (cityId != null) {
+            int citId;
+            try {
+                citId = Integer.parseInt(cityId);
+            } catch (NumberFormatException e) {
+                return Collections.emptyList();
+            }
+            return socialServices.getLocationsByCity(citId);
+        }
+
+        return Collections.emptyList();
+    }
+
     @RequestMapping(value = "/categories", method = RequestMethod.GET)
     @ResponseBody
     @ResponseStatus(code = HttpStatus.OK)
     public List<Category> getCategories() {
         return socialServices.getCategories();
+    }
+
+    @RequestMapping(value = "/cities", method = RequestMethod.GET)
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<City> getCities() {
+        return socialServices.getCities();
     }
 }
