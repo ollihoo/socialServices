@@ -1,6 +1,5 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
-import de.hoogvliet.socialservices.socialservice.CityService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import lombok.RequiredArgsConstructor;
@@ -9,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service  @Log4j2 @RequiredArgsConstructor
 public class TSVParser {
@@ -23,7 +24,6 @@ public class TSVParser {
     private final LocationMaintenanceService locationMaintenanceService;
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
-    private final CityService cityService;
 
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
@@ -49,7 +49,6 @@ public class TSVParser {
 
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationMaintenanceService.createOrUpdateLocation(columns);
-        cityService.saveCity(location.getCity());
         locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
         return location;
     }

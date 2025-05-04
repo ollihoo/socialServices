@@ -1,0 +1,1 @@
+ALTER TABLE location_category ADD city_id BIGINT;

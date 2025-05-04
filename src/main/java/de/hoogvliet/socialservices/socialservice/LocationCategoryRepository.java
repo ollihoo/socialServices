@@ -12,4 +12,6 @@ public interface LocationCategoryRepository extends JpaRepository<LocationCatego
 
     @Query("SELECT lc.location from LocationCategory lc WHERE lc.category.id = :categoryId")
     List<Location> findLocationsByCategoryId(@Param("categoryId") Integer categoryId);
+
+    List<LocationCategory> findByCityId(Long cityId);
 }

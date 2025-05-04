@@ -9,21 +9,44 @@ import java.util.Optional;
 @Service @RequiredArgsConstructor
 public class LocationCategoryService {
     private final LocationCategoryRepository locationCategoryRepository;
+    private final CityService cityService;
 
     public void save(Location location, List<Category> categories) {
+        City city = cityService.saveCity(location.getCity());
         categories.forEach(category -> {
             Optional<LocationCategory> optionalLocationCategory =
                     locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
             if (optionalLocationCategory.isEmpty()) {
-                createLocationCategory(location, category);
+                createLocationCategory(location, category, city);
+                return;
             }
+            updateCityEntry(optionalLocationCategory.get(), city);
         });
     }
 
-    private void createLocationCategory(Location location, Category category) {
+    private void updateCityEntry(LocationCategory locationCategory, City city) {
+        if ((city == null) || ((locationCategory.getCity() != null) &&
+            locationCategory.getCity().getId() == city.getId())) {
+            return;
+        }
+        locationCategory.setCity(city);
+        locationCategoryRepository.save(locationCategory);
+    }
+
+    private void createLocationCategory(Location location, Category category, City city) {
         LocationCategory lc = new LocationCategory();
         lc.setCategory(category);
         lc.setLocation(location);
+        lc.setCity(city);
         locationCategoryRepository.save(lc);
+    }
+
+    public void updateCityEntries() {
+        locationCategoryRepository.findByCityId(null).forEach(locationCategory -> {
+            String cityName = locationCategory.getLocation().getCity();
+            City city = cityService.saveCity(cityName);
+            locationCategory.setCity(city);
+            locationCategoryRepository.save(locationCategory);
+        });
     }
 }
