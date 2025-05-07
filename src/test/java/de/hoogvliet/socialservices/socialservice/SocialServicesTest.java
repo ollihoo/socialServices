@@ -42,7 +42,7 @@ class SocialServicesTest {
     @Test
     void getCategoriesByCityIdReturnsACorrectList() {
         List<Category> actualList = socialServices.getCategoriesForCity(23);
-        assertEquals(actualList, ANY_LOCATION_LIST);
+        assertEquals(ANY_CATEGORY_LIST, actualList);
     }
 
     @Test
