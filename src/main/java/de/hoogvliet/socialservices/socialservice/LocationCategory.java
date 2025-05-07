@@ -19,4 +19,7 @@ public class LocationCategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
 }
