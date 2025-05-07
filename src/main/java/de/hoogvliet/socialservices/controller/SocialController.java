@@ -34,7 +34,11 @@ public class SocialController {
 
     @GetMapping("/categories")
     @ResponseBody
-    public List<Category> getCategories() {
+    public List<Category> getCategories(
+            @RequestParam(value="ct", required = false) Integer cityId) {
+        if (cityId != null ) {
+            return socialServices.getCategoriesForCity(cityId);
+        }
         return socialServices.getCategories();
     }
 

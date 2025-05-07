@@ -41,6 +41,15 @@ class SocialControllerTest {
     }
 
     @Test
+    void categoriesEndpointIsAccessibleWithCityParameter() throws Exception {
+        when(socialServices.getCategoriesForCity(anyInt())).thenReturn(ANY_CAT_LIST);
+        mockMvc.perform(get("/categories?ct=33"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+        verify(socialServices).getCategoriesForCity(33);
+    }
+
+    @Test
     void socialEndpointIsAccessible() throws Exception {
         when(socialServices.getLocationsByCategory(anyInt())).thenReturn(ANY_LOC_LIST);
         mockMvc.perform(get("/social?c=17"))
