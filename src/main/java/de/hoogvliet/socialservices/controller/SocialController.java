@@ -1,6 +1,7 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.Category;
+import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,17 @@ public class SocialController {
         }
         return Collections.emptyList();
     }
+
     @GetMapping("/categories")
     @ResponseBody
     public List<Category> getCategories() {
         return socialServices.getCategories();
+    }
+
+    @GetMapping(value = "/cities")
+    @ResponseBody
+    public List<City> getCities() {
+        return socialServices.getCities();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
