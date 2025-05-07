@@ -21,8 +21,12 @@ public class SocialController {
     @GetMapping("/social")
     @ResponseBody
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c", required = false) Integer categoryId) {
+            @RequestParam(value = "c", required = false) Integer categoryId,
+            @RequestParam(value="ct", required = false) Integer cityId) {
         if (categoryId != null) {
+            if (cityId != null) {
+                return socialServices.getLocationsByCategoryAndCity(categoryId, cityId);
+            }
             return socialServices.getLocationsByCategory(categoryId);
         }
         return Collections.emptyList();
@@ -43,7 +47,8 @@ public class SocialController {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         log.warn(ex.getMessage());
-        String error = "The parameter you entered is invalid.";
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(
+                "There is a problem with the parameters you entered.",
+                HttpStatus.BAD_REQUEST);
     }
 }

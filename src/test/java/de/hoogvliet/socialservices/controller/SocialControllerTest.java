@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class SocialControllerTest {
-    private static final String RESPONSE_MSG = "The parameter you entered is invalid.";
+    private static final String RESPONSE_MSG = "There is a problem with the parameters you entered.";
     private static final List<Category> ANY_CAT_LIST = Collections.emptyList();
     private static final List<Location> ANY_LOC_LIST = Collections.emptyList();
     @Autowired
@@ -63,5 +63,15 @@ class SocialControllerTest {
                 .andExpect(status().is4xxClientError())
                 .andExpect(content().string(RESPONSE_MSG));
     }
+
+    @Test
+    void socialEndpointIsAccessibleWithTwoParameters() throws Exception {
+        when(socialServices.getLocationsByCategoryAndCity(anyInt(), anyInt())).thenReturn(ANY_LOC_LIST);
+        mockMvc.perform(get("/social?c=17&ct=4"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+        verify(socialServices).getLocationsByCategoryAndCity(17, 4);
+    }
+
 
 }
