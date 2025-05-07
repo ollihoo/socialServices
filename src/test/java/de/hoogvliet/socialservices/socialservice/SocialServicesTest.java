@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SocialServicesTest {
+    private static final List<Category> ANY_CATEGORY_LIST = Collections.emptyList();
     private final List<Location> ANY_LOCATION_LIST = Collections.emptyList();
 
     @InjectMocks
@@ -25,17 +26,30 @@ class SocialServicesTest {
     private LocationCategoryRepository locationCategoryRepository;
 
     @Test
-    public void getLocationsByCategoriesReturnsCorrectListOfLocations() {
+    void getLocationsByCategoriesReturnsCorrectListOfLocations() {
         when(locationCategoryRepository.findLocationsByCategoryId(anyInt())).thenReturn(ANY_LOCATION_LIST);
         List<Location> locationsByCategory = socialServices.getLocationsByCategory(1);
         assertEquals(locationsByCategory, ANY_LOCATION_LIST);
     }
 
     @Test
-    public void getLocationsByCategoriesUsesCorrectRepository() {
+    void getLocationsByCategoriesUsesCorrectRepository() {
         when(locationCategoryRepository.findLocationsByCategoryId(anyInt())).thenReturn(ANY_LOCATION_LIST);
         socialServices.getLocationsByCategory(1);
         verify(locationCategoryRepository).findLocationsByCategoryId(1);
+    }
+
+    @Test
+    void getCategoriesByCityIdReturnsACorrectList() {
+        List<Category> actualList = socialServices.getCategoriesForCity(23);
+        assertEquals(actualList, ANY_LOCATION_LIST);
+    }
+
+    @Test
+    void getCategoriesByCityUsesGetLocationCategoriesForCity() {
+        when(locationCategoryRepository.findLocationCategoriesByCity(anyInt())).thenReturn(ANY_CATEGORY_LIST);
+        socialServices.getCategoriesForCity(23);
+        verify(locationCategoryRepository).findLocationCategoriesByCity(23);
     }
 
 }

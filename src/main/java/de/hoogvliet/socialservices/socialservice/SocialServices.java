@@ -16,6 +16,10 @@ public class SocialServices {
         return categoryRepository.findAllByOrderByNameAsc();
     }
 
+    public List<Category> getCategoriesForCity(int cityId) {
+        return locationCategoryRepository.findLocationCategoriesByCity(cityId);
+    }
+
     public List<City> getCities() {
         return cityRepository.findAll();
     }
