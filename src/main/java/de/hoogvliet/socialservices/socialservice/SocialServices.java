@@ -11,7 +11,6 @@ public class SocialServices {
     private final CityRepository cityRepository;
     private final LocationRepository locationRepository;
     private final LocationCategoryRepository locationCategoryRepository;
-    private final LocationCityRepository locationCityRepository;
 
     public List<Location> getAllEntries() {
         return locationRepository.findAll();
@@ -27,9 +26,5 @@ public class SocialServices {
 
     public List<Location> getLocationsByCategory(int categoryId) {
         return locationCategoryRepository.findLocationsByCategoryId(categoryId);
-    }
-
-    public List<Location> getLocationsByCity(int cityId) {
-        return  locationCityRepository.findLocationsByCityId(cityId);
     }
 }

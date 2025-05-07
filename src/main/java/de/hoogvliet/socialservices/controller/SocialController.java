@@ -28,23 +28,6 @@ public class SocialController {
         return Collections.emptyList();
     }
 
-    @GetMapping(value = "/social/city")
-    @ResponseBody
-    public List<Location> getSocialServiceCityEntities(
-            @RequestParam(value = "ct", required = false) String cityId) {
-        if (cityId != null) {
-            int citId;
-            try {
-                citId = Integer.parseInt(cityId);
-            } catch (NumberFormatException e) {
-                return Collections.emptyList();
-            }
-            return socialServices.getLocationsByCity(citId);
-        }
-
-        return Collections.emptyList();
-    }
-
     @GetMapping("/categories")
     @ResponseBody
     public List<Category> getCategories() {

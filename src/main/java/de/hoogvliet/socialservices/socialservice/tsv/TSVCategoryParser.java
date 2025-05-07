@@ -38,7 +38,7 @@ public class TSVCategoryParser {
 
     private Category createCategory(String cat) {
         Category myCat = new Category();
-        myCat.setName(cat);
+        myCat.setName(cat.trim());
         categoryRepository.save(myCat);
         return myCat;
     }
