@@ -5,11 +5,9 @@ import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component @RequiredArgsConstructor
 public class TSVCategoryParser {
@@ -26,7 +24,8 @@ public class TSVCategoryParser {
 
     private ArrayList<Category> splitAndParseIntoCategoryList(String[] entry) {
         String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
-        return Arrays.stream(categories)
+        List<String> list = Arrays.stream(categories).distinct().toList();
+        return list.stream()
                 .map(this::searchCategoryByName)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
