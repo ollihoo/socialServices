@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class TSVCategoryParserTest {
@@ -18,7 +19,7 @@ class TSVCategoryParserTest {
     private TSVCategoryParser tsvCategoryParser;
 
     @Mock
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Test
     void testThatAllGivenCategoriesAreReturned() {
@@ -31,14 +32,14 @@ class TSVCategoryParserTest {
     void testThatGivenCategoryIsFound() {
         String[] inputArray = { "", "", "", "", "", "", "Essen"};
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
-        assertEquals("Essen", actualCategories.get(0).getName());
+        assertEquals("Essen", actualCategories.getFirst().getName());
     }
 
     @Test
     void testThatGivenCategoryIsTrimmedCorrectlyFound() {
         String[] inputArray = { "", "", "", "", "", "","\tEssen  "};
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
-        assertEquals("Essen", actualCategories.get(0).getName());
+        assertEquals("Essen", actualCategories.getFirst().getName());
     }
 
     @Test
@@ -46,5 +47,12 @@ class TSVCategoryParserTest {
         String[] inputArray = { "", "", "", "", "", "","Essen, Essen"};
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
         assertEquals(1, actualCategories.size());
+    }
+
+    @Test
+    void testThatCategoryIsCheckedAgainstDatabase() {
+        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        tsvCategoryParser.getOrCreateCategories(inputArray);
+        verify(categoryRepository).findByName("Essen");
     }
 }

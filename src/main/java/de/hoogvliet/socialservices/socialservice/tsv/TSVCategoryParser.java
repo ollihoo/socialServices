@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component @RequiredArgsConstructor
 public class TSVCategoryParser {
@@ -31,13 +30,14 @@ public class TSVCategoryParser {
     }
 
     private Category searchCategoryByName(String categoryName) {
-        Optional<Category> optionalCategory = categoryRepository.findByName(categoryName);
-        return optionalCategory.orElseGet(() -> createCategory(categoryName));
+        String trimmedCategoryName = categoryName.trim();
+        Optional<Category> optionalCategory = categoryRepository.findByName(trimmedCategoryName);
+        return optionalCategory.orElseGet(() -> createCategory(trimmedCategoryName));
     }
 
     private Category createCategory(String cat) {
         Category myCat = new Category();
-        myCat.setName(cat.trim());
+        myCat.setName(cat);
         categoryRepository.save(myCat);
         return myCat;
     }
