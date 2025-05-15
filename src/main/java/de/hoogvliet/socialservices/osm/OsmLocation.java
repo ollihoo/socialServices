@@ -16,9 +16,9 @@ public class OsmLocation {
     private String type;
 
     @JsonProperty
-    private Float lat;
+    private Double lat;
     @JsonProperty
-    private Float lon;
+    private Double lon;
 
     @JsonProperty("address")
     private Map<String, String> address;
