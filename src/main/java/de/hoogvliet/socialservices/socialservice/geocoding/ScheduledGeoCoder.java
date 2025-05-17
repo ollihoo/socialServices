@@ -17,13 +17,17 @@ public class ScheduledGeoCoder {
     private final LocationRepository locationRepository;
     private final CachedOsmClient osmSearchClient;
 
+    private final List<String> ACCEPTABLE_LOC_TYPES = List.of(
+            "house", "library", "company", "doctors", "psychotherapist", "community_centre"
+    );
+
     @Scheduled(fixedRate = 20000)
     public void updateLocationWithLatLon () {
-        List<Location> locations = locationRepository.getLocationByLatitudeNull();
-        if (locations.isEmpty()) {
+        Location loc = getNextParsableLocation();
+        if (loc == null) {
             return;
         }
-        Location loc = locations.getFirst();
+
         try {
             List<OsmLocation> osmData = osmSearchClient.getOsmData(loc.getAddress(), loc.getPostCode(), loc.getCity());
             if (osmData.size() == 1) {
@@ -31,18 +35,30 @@ public class ScheduledGeoCoder {
             } else {
                 log.warn("Ambiguous data for '{}'. Data was {}, but not 1.", loc.getAddress(), osmData.size());
                 for (OsmLocation osmLocation : osmData) {
-                    if ("house".equals(osmLocation.getType()) || "library".equals(osmLocation.getType())) {
+                    if (ACCEPTABLE_LOC_TYPES.contains(osmLocation.getType())) {
                         saveLocation(loc, osmLocation);
                         break;
                     } else {
-                        log.warn("OSM entry is type {} for {}", osmLocation.getType(), loc.getName());
+                        log.warn("OSM entry is type {} for {} -> lat/lon {},{}",
+                                osmLocation.getType(),
+                                loc.getName(), osmLocation.getLat(), osmLocation.getLon());
                     }
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.warn("Could not drive geo update: {}", e.getMessage());
         }
+    }
+
+    private Location getNextParsableLocation() {
+        List<Location> locations = locationRepository.getLocationByLatitudeNull();
+        for (Location location : locations) {
+            if (! osmSearchClient.locationHasBeenParsed(
+                    location.getAddress(), location.getPostCode(), location.getCity())) {
+                return location;
+            }
+        }
+        return null;
     }
 
     private void saveLocation (Location loc, OsmLocation osmLocation) {

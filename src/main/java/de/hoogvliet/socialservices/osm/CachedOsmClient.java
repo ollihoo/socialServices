@@ -14,6 +14,10 @@ public class CachedOsmClient {
     private final OsmMapper osmMapper;
     private final CacheConfiguration cacheConfig;
 
+    public boolean locationHasBeenParsed(String street, String postalCode, String city) {
+        Resource cacheResource = cacheConfig.getCacheResource(street, postalCode, city);
+        return cacheResource.exists();
+    }
 
     public List<OsmLocation> getOsmData(String street, String postalCode, String city) {
         Resource resource = cacheConfig.getCacheResource(street, postalCode, city);
