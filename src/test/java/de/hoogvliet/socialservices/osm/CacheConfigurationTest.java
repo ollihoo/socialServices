@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CacheConfigurationTest {
-    private static final String ANY_STREET = "Strae 34";
+    private static final String ANY_STREET = "Straße 34";
     private static final String ANY_POSTAL_CODE = "13353 AD";
     private static final String ANY_CITY = "Berlin/Wedding";
 
@@ -40,7 +40,7 @@ class CacheConfigurationTest {
         cacheConfiguration.getCacheResource(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(resourceLoader).getResource(captor.capture());
-        assertEquals(captor.getValue(), "/mypath/BerlinWedding_13353AD_Strae34.json");
+        assertEquals("/mypath/BerlinWedding_13353AD_Straße34.json", captor.getValue());
     }
 
 }
