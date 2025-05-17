@@ -3,6 +3,7 @@ package de.hoogvliet.socialservices.osm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,7 +13,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class OSMSearchApi {
+@Service
+public class OSMSearchClient {
     private static final String USER_AGENT_IDENTIFIER = "de.locating.services.13353";
     public static final String NOMINATIM_HOST = "nominatim.openstreetmap.org";
     public static final String NOMINATIM_PATH = "/search.php";
@@ -28,8 +30,7 @@ public class OSMSearchApi {
             ObjectMapper mapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             return mapper.readValue(response.body(),
-                    new TypeReference<>() {
-                    });
+                    new TypeReference<>() {});
         }
     }
 

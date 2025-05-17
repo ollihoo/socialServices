@@ -1,6 +1,6 @@
 package de.hoogvliet.socialservices.thirdparty;
 
-import de.hoogvliet.socialservices.osm.OSMSearchApi;
+import de.hoogvliet.socialservices.osm.OSMSearchClient;
 import de.hoogvliet.socialservices.osm.OsmLocation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,14 +14,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class OSMSearchApiTest {
+public class OSMSearchClientTest {
 
     @InjectMocks
-    private OSMSearchApi osmSearchApi;
+    private OSMSearchClient osmSearchClient;
 
     @Test
     void getsAnswerFromOSM() throws IOException, InterruptedException, URISyntaxException {
-        List<OsmLocation> res = osmSearchApi.getOsmData("Friedrichstr. 109", "10117", "Berlin");
+        List<OsmLocation> res = osmSearchClient.getOsmData("Friedrichstr. 109", "10117", "Berlin");
         assertEquals("Berlin", res.getFirst().getCity());
         assertEquals("109", res.getFirst().getHouseNumber());
         assertEquals("Friedrichstraße", res.getFirst().getRoad());
