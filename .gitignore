@@ -5,4 +5,5 @@ build/
 src/main/resources/application.yml
 docker/socialservices/socialservices.db
 docker/socialservices/input/Beratungsstellen.tsv
+docker/socialservices/osm_cache/*.json
 .env
