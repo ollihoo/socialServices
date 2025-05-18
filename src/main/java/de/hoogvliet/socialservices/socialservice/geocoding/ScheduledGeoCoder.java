@@ -18,7 +18,8 @@ public class ScheduledGeoCoder {
     private final CachedOsmClient osmSearchClient;
 
     private final List<String> ACCEPTABLE_LOC_TYPES = List.of(
-            "house", "library", "company", "doctors", "psychotherapist", "community_centre"
+            "house", "library", "company", "doctors", "psychotherapist", "community_centre",
+            "social_facility", "place_of_worship"
     );
 
     @Scheduled(fixedRate = 20000)
