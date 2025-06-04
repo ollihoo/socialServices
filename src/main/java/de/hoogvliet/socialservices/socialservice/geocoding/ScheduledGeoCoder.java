@@ -22,7 +22,7 @@ public class ScheduledGeoCoder {
             "social_facility", "place_of_worship"
     );
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 200000)
     public void updateLocationWithLatLon () {
         Location loc = getNextParsableLocation();
         if (loc == null) {
@@ -32,7 +32,7 @@ public class ScheduledGeoCoder {
         try {
             List<OsmLocation> osmData = osmSearchClient.getOsmData(loc.getAddress(), loc.getPostCode(), loc.getCity());
             if (osmData.size() == 1) {
-                saveLocation(loc, osmData.getFirst());
+                saveLocation(loc, osmData.get(0));
             } else {
                 log.warn("Ambiguous data for '{}'. Data was {}, but not 1.", loc.getAddress(), osmData.size());
                 for (OsmLocation osmLocation : osmData) {
