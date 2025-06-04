@@ -1,0 +1,1 @@
+This is the directory, where cache files are saved locally. See (doc/osm.md)[../../doc/osm.md] for more information.

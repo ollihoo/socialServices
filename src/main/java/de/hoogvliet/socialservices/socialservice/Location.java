@@ -21,6 +21,8 @@ public class Location {
     private String postCode;
     private String city;
     private URL website;
+    private Double latitude;
+    private Double longitude;
     @JsonIgnore
     @OneToMany(mappedBy = "location")
     private List<LocationCategory> locationCategories = new ArrayList<>();
