@@ -10,18 +10,11 @@ public class LocationBuilder {
 
     private final Location location;
 
-    public static LocationBuilder getInstance(Location existingLocation) {
-        if (existingLocation != null) {
-            return new LocationBuilder(existingLocation);
-        }
-            return new LocationBuilder();
-    }
-
-    private LocationBuilder() {
+    public LocationBuilder() {
         this.location = new Location();
     }
 
-    private LocationBuilder(Location location) {
+    public LocationBuilder(Location location) {
         this.location = location;
     }
 
