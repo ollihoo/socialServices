@@ -19,7 +19,7 @@ public class ScheduledGeoCoder {
 
     private final List<String> ACCEPTABLE_LOC_TYPES = List.of(
             "house", "library", "company", "doctors", "psychotherapist", "community_centre",
-            "social_facility", "place_of_worship"
+            "social_facility", "place_of_worship", "townhall"
     );
 
     @Scheduled(fixedRate = 200000)
