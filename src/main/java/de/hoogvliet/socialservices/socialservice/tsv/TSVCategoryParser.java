@@ -5,10 +5,7 @@ import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component @RequiredArgsConstructor
@@ -26,19 +23,21 @@ public class TSVCategoryParser {
 
     private ArrayList<Category> splitAndParseIntoCategoryList(String[] entry) {
         String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
-        return Arrays.stream(categories)
+        List<String> list = Arrays.stream(categories).distinct().toList();
+        return list.stream()
                 .map(this::searchCategoryByName)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private Category searchCategoryByName(String categoryName) {
-        Optional<Category> optionalCategory = categoryRepository.findByName(categoryName);
-        return optionalCategory.orElseGet(() -> createCategory(categoryName));
+        String trimmedCategoryName = categoryName.trim();
+        Optional<Category> optionalCategory = categoryRepository.findByName(trimmedCategoryName);
+        return optionalCategory.orElseGet(() -> createCategory(trimmedCategoryName));
     }
 
     private Category createCategory(String cat) {
         Category myCat = new Category();
-        myCat.setName(cat.trim());
+        myCat.setName(cat);
         categoryRepository.save(myCat);
         return myCat;
     }
