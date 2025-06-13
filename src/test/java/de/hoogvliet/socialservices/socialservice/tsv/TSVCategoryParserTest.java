@@ -71,4 +71,10 @@ class TSVCategoryParserTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    void splitCategoriesEntry_can_handle_shorter_input_arrays () {
+        String[] inputArray = { "", "", "", "", "", "" };
+        List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
+        assertTrue(result.isEmpty());
+    }
 }

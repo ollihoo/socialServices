@@ -32,7 +32,13 @@ public class TSVParser {
         try (BufferedReader br = openReader()) {
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("Zeitstempel")) {
-                    locations.add(getOrCreateLocation(line.split("\t")));
+                    Location location = getOrCreateLocation(line.split("\t"));
+                    if (location != null) {
+                        locations.add(location);
+                    } else {
+                        log.warn("Entry deleted: " + line);
+                    }
+
                 }
             }
         } catch (IOException e) {
@@ -49,7 +55,10 @@ public class TSVParser {
 
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationMaintenanceService.createOrUpdateLocation(columns);
-        locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
-        return location;
+        if (location != null) {
+            locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
+            return location;
+        }
+        return null;
     }
 }

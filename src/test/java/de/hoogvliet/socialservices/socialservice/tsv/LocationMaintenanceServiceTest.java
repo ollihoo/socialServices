@@ -17,9 +17,10 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LocationMaintenanceServiceTest {
-    private final String[] ANY_LOCATION_INPUT = { "TIMESTAMP", "NAME", "SOME ADDRESS", "POSTCODE", "CITY", "https://localhost/" };
+    private final String[] ANY_LOCATION_INPUT = { "TIMESTAMP", "NAME", "SOME ADDRESS", "POSTCODE", "CITY", "https://localhost/", "Essen, Trinken" };
+    private final String[] LOCATION_WITHOUT_CATEGORIES = { "TIMESTAMP", "NAME", "SOME ADDRESS", "POSTCODE", "CITY", "https://localhost/", " " };
     private final String CORRECT_TABLE_REFERENCE = "80c1f0329fb983673bddb061a0068098fb372bb05009f9d20077149a74f71634";
-    private final Location ANY_LOCATION_FROM_DB = new Location();
+    private final Location LOCATION_FROM_DB = new Location();
     private final Location ANY_LOCATION = new Location();
     private final Location ANY_LOCATION_UPDATED = new Location();
 
@@ -35,7 +36,7 @@ class LocationMaintenanceServiceTest {
     void getLocation_uses_table_reference_for_requests() {
         when(tsvColumnParser.createTableReference(any())).thenReturn(CORRECT_TABLE_REFERENCE);
         when(locationRepository.findByTableReference(anyString()))
-                .thenReturn(Optional.of(ANY_LOCATION_FROM_DB));
+                .thenReturn(Optional.of(LOCATION_FROM_DB));
         locationMaintenanceService.getLocation(ANY_LOCATION_INPUT);
         verify(locationRepository).findByTableReference(CORRECT_TABLE_REFERENCE);
     }
@@ -44,9 +45,9 @@ class LocationMaintenanceServiceTest {
     void getLocation_returns_existing_location_from_db() {
         when(tsvColumnParser.createTableReference(any())).thenReturn(CORRECT_TABLE_REFERENCE);
         when(locationRepository.findByTableReference(anyString()))
-                .thenReturn(Optional.of(ANY_LOCATION_FROM_DB));
+                .thenReturn(Optional.of(LOCATION_FROM_DB));
         assertEquals(
-                ANY_LOCATION_FROM_DB,
+                LOCATION_FROM_DB,
                 locationMaintenanceService.getLocation(ANY_LOCATION_INPUT));
     }
 
@@ -67,17 +68,17 @@ class LocationMaintenanceServiceTest {
     @Test
     void createLocation_returns_saved_entity() {
         when(tsvColumnParser.createLocation(any())).thenReturn(ANY_LOCATION);
-        when(locationRepository.save(any())).thenReturn(ANY_LOCATION_FROM_DB);
+        when(locationRepository.save(any())).thenReturn(LOCATION_FROM_DB);
 
         Location actualLocation = locationMaintenanceService.createLocation(ANY_LOCATION_INPUT);
 
-        assertEquals(ANY_LOCATION_FROM_DB,actualLocation);
+        assertEquals(LOCATION_FROM_DB,actualLocation);
     }
 
     @Test
     void updateLocation_updates_entity() {
-        locationMaintenanceService.updateLocation(ANY_LOCATION_INPUT, ANY_LOCATION_FROM_DB);
-        verify(tsvColumnParser).updateLocation(ANY_LOCATION_INPUT, ANY_LOCATION_FROM_DB);
+        locationMaintenanceService.updateLocation(ANY_LOCATION_INPUT, LOCATION_FROM_DB);
+        verify(tsvColumnParser).updateLocation(ANY_LOCATION_INPUT, LOCATION_FROM_DB);
     }
 
     @Test
@@ -85,9 +86,17 @@ class LocationMaintenanceServiceTest {
         when(tsvColumnParser.updateLocation(any(), any())).thenReturn(ANY_LOCATION);
         when(locationRepository.save(any())).thenReturn(ANY_LOCATION_UPDATED);
 
-        Location actualLocation = locationMaintenanceService.updateLocation(ANY_LOCATION_INPUT, ANY_LOCATION_FROM_DB);
+        Location actualLocation = locationMaintenanceService.updateLocation(ANY_LOCATION_INPUT, LOCATION_FROM_DB);
 
         assertEquals(ANY_LOCATION_UPDATED,actualLocation);
     }
 
+    @Test
+    void createOrUpdateeLocation_removes_locations_without_categories () {
+        when(locationRepository.findByTableReference(any()))
+                .thenReturn(Optional.of(LOCATION_FROM_DB));
+
+        locationMaintenanceService.createOrUpdateLocation(LOCATION_WITHOUT_CATEGORIES);
+        verify(locationRepository).delete(LOCATION_FROM_DB);
+    }
 }
