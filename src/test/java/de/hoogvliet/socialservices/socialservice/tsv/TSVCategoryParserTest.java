@@ -60,8 +60,8 @@ class TSVCategoryParserTest {
     void splitCategoriesEntry_splits_string_into_categories () {
         String[] inputArray = { "", "", "", "", "", "","Essen"};
         List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
-        assertEquals("Essen", result.get(0));
-        assertTrue(result.size() == 1);
+        assertEquals("Essen", result.getFirst());
+        assertEquals(1, result.size());
     }
 
     @Test
