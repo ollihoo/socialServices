@@ -22,17 +22,20 @@ public class TSVCategoryParser {
     }
 
     private ArrayList<Category> splitAndParseIntoCategoryList(String[] entry) {
-        String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
-        List<String> list = Arrays.stream(categories).distinct().toList();
+        List<String> list = splitCategoriesEntry(entry);
         return list.stream()
                 .map(this::searchCategoryByName)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
+    public static List<String> splitCategoriesEntry(String[] entry) {
+        String[] categories = entry[COLUMN_CATEGORIES].split(", ?");
+        return Arrays.stream(categories).map(String::trim).distinct().filter(s -> ! s.isEmpty()).collect(Collectors.toList());
+    }
+
     private Category searchCategoryByName(String categoryName) {
-        String trimmedCategoryName = categoryName.trim();
-        Optional<Category> optionalCategory = categoryRepository.findByName(trimmedCategoryName);
-        return optionalCategory.orElseGet(() -> createCategory(trimmedCategoryName));
+        Optional<Category> optionalCategory = categoryRepository.findByName(categoryName);
+        return optionalCategory.orElseGet(() -> createCategory(categoryName));
     }
 
     private Category createCategory(String cat) {

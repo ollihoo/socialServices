@@ -55,4 +55,20 @@ class TSVCategoryParserTest {
         tsvCategoryParser.getOrCreateCategories(inputArray);
         verify(categoryRepository).findByName("Essen");
     }
+
+    @Test
+    void splitCategoriesEntry_splits_string_into_categories () {
+        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
+        assertEquals("Essen", result.get(0));
+        assertTrue(result.size() == 1);
+    }
+
+    @Test
+    void splitCategoriesEntry_can_handle_whitespace_string_correctly () {
+        String[] inputArray = { "", "", "", "", "", ""," "};
+        List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
+        assertTrue(result.isEmpty());
+    }
+
 }
