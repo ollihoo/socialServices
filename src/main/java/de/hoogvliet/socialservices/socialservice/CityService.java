@@ -20,4 +20,8 @@ public class CityService {
         return cityByName.get();
     }
 
+    public void deleteOrphanedCities() {
+        cityRepository.deleteOrphanedCities();
+    }
+
 }

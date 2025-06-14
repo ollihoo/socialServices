@@ -1,5 +1,6 @@
 package de.hoogvliet.socialservices.dbseeder;
 
+import de.hoogvliet.socialservices.socialservice.CityService;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
 import de.hoogvliet.socialservices.socialservice.tsv.TSVParser;
@@ -14,6 +15,7 @@ import java.util.List;
 public class CheckTSVDataForUpdates {
     private final TSVParser tsvParser;
     private final LocationCategoryService locationCategoryService;
+    private final CityService cityService;
 
     @PostConstruct
     public void parseTsvFileAndDoUpdates() {
@@ -21,6 +23,7 @@ public class CheckTSVDataForUpdates {
         log.info("Found and checked {} locations.", locations.size());
         locationCategoryService.updateCityEntries();
         locationCategoryService.deleteOrphanedEntries();
+        cityService.deleteOrphanedCities();
     }
 
 
