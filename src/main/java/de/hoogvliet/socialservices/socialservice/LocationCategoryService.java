@@ -24,6 +24,19 @@ public class LocationCategoryService {
         });
     }
 
+    public void updateCityEntries() {
+        locationCategoryRepository.findByCityId(null).forEach(locationCategory -> {
+            String cityName = locationCategory.getLocation().getCity();
+            City city = cityService.saveCity(cityName);
+            locationCategory.setCity(city);
+            locationCategoryRepository.save(locationCategory);
+        });
+    }
+
+    public void deleteOrphanedEntries() {
+        locationCategoryRepository.deleteOrphanedLocationMappings();
+    }
+
     private void updateCityEntry(LocationCategory locationCategory, City city) {
         if ((city == null) || ((locationCategory.getCity() != null) &&
             locationCategory.getCity().getId() == city.getId())) {
@@ -39,14 +52,5 @@ public class LocationCategoryService {
         lc.setLocation(location);
         lc.setCity(city);
         locationCategoryRepository.save(lc);
-    }
-
-    public void updateCityEntries() {
-        locationCategoryRepository.findByCityId(null).forEach(locationCategory -> {
-            String cityName = locationCategory.getLocation().getCity();
-            City city = cityService.saveCity(cityName);
-            locationCategory.setCity(city);
-            locationCategoryRepository.save(locationCategory);
-        });
     }
 }

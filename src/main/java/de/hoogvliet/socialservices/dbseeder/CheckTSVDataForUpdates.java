@@ -20,6 +20,7 @@ public class CheckTSVDataForUpdates {
         List<Location> locations = tsvParser.getAllEntriesFromTSV();
         log.info("Found and checked {} locations.", locations.size());
         locationCategoryService.updateCityEntries();
+        locationCategoryService.deleteOrphanedEntries();
     }
 
 
