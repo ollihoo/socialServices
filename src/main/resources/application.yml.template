@@ -28,7 +28,7 @@ spring:
 
 application:
   tsv:
-    path: file:./docker/socialservices/input/Beratungsstellen.tsv
+    pattern: file:./docker/socialservices/input/*.tsv
   osm:
     cache:
       path: file:./docker/socialservices/osm_cache/
