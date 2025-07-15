@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service @Log4j2 @RequiredArgsConstructor
@@ -17,7 +18,9 @@ public class SocialServices {
     }
 
     public List<Category> getCategoriesForCity(int cityId) {
-        return locationCategoryRepository.findLocationCategoriesByCity(cityId);
+        List<Category> categories = locationCategoryRepository.findLocationCategoriesByCity(cityId);
+        categories.sort(Comparator.comparing(Category::getName));
+        return categories;
     }
 
     public List<City> getCities() {
