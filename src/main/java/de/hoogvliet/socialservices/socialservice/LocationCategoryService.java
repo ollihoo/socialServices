@@ -1,12 +1,14 @@
 package de.hoogvliet.socialservices.socialservice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service @RequiredArgsConstructor
+@Service @Slf4j
+@RequiredArgsConstructor
 public class LocationCategoryService {
     private final LocationCategoryRepository locationCategoryRepository;
     private final CityService cityService;
@@ -21,6 +23,13 @@ public class LocationCategoryService {
                 return;
             }
             updateCityEntry(optionalLocationCategory.get(), city);
+        });
+        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
+        currentCategories.forEach(category -> {
+            if (! categories.contains(category)) {
+                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
+                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
+            }
         });
     }
 

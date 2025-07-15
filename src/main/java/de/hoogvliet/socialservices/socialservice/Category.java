@@ -18,4 +18,11 @@ public class Category {
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<LocationCategory> locationCategories = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (! (o instanceof Category other)) return false;
+        return id == other.id && name.equals(other.name);
+    }
 }
