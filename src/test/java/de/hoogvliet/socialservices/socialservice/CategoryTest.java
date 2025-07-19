@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -19,7 +18,7 @@ class CategoryTest {
         Category cat2 = new Category();
         cat2.setId(24);
         cat2.setName("Test24");
-        assertTrue(cat1.equals(cat2));
+        assertEquals(cat1, cat2);
     }
 
     @Test
@@ -30,7 +29,7 @@ class CategoryTest {
         Category cat2 = new Category();
         cat2.setId(25);
         cat2.setName("Test24");
-        assertFalse(cat1.equals(cat2));
+        assertNotEquals(cat1, cat2);
     }
 
     @Test
@@ -41,7 +40,7 @@ class CategoryTest {
         Category cat2 = new Category();
         cat2.setId(24);
         cat2.setName("Test25");
-        assertFalse(cat1.equals(cat2));
+        assertNotEquals(cat1, cat2);
     }
 
     @Test
@@ -52,7 +51,7 @@ class CategoryTest {
         Category cat2 = new Category();
         cat2.setId(25);
         cat2.setName("Test25");
-        assertFalse(cat1.equals(cat2));
+        assertNotEquals(cat1, cat2);
     }
 
 }
