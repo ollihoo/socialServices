@@ -13,8 +13,23 @@ public class LocationCategoryService {
     private final LocationCategoryRepository locationCategoryRepository;
     private final CityService cityService;
 
-    public void save(Location location, List<Category> categories) {
+    public void doCrudOperation(Location location, List<Category> categories) {
         City city = cityService.saveCity(location.getCity());
+        addOrUpdateCategories(location, categories, city);
+        removeOutdatedCategoriesForLocation(location, categories);
+    }
+
+    private void removeOutdatedCategoriesForLocation(Location location, List<Category> categories) {
+        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
+        currentCategories.forEach(category -> {
+            if (! categories.contains(category)) {
+                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
+                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
+            }
+        });
+    }
+
+    private void addOrUpdateCategories(Location location, List<Category> categories, City city) {
         categories.forEach(category -> {
             Optional<LocationCategory> optionalLocationCategory =
                     locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
@@ -23,13 +38,6 @@ public class LocationCategoryService {
                 return;
             }
             updateCityEntry(optionalLocationCategory.get(), city);
-        });
-        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
-        currentCategories.forEach(category -> {
-            if (! categories.contains(category)) {
-                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
-                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
-            }
         });
     }
 

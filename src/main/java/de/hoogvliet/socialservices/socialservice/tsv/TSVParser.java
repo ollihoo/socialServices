@@ -56,7 +56,7 @@ public class TSVParser {
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationMaintenanceService.createOrUpdateLocation(columns);
         if (location != null) {
-            locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
+            locationCategoryService.doCrudOperation(location, categoryParser.getOrCreateCategories(columns));
             return location;
         }
         return null;

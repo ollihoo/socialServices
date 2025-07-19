@@ -46,7 +46,7 @@ class LocationCategoryServiceTest {
         when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
                 thenReturn(
                         Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
         verify(locationCategoryRepository, times(1)).findByLocationIdAndCategoryId(LOCATION_ID, CATEGORY_ID);
     }
 
@@ -55,7 +55,7 @@ class LocationCategoryServiceTest {
         when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
                 thenReturn(
                         Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
         verify(cityService).saveCity(ANY_CITY_NAME);
     }
 
@@ -63,7 +63,7 @@ class LocationCategoryServiceTest {
     public void ifLocationCategoryCombinationDoesNotExistItIsSaved() {
         when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
                 thenReturn(Optional.empty());
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
         verify(locationCategoryRepository).save(any(LocationCategory.class));
     }
 
@@ -74,7 +74,7 @@ class LocationCategoryServiceTest {
                         Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
         when(cityService.saveCity(any(String.class))).thenReturn(createCity(34L));
 
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
 
         ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
         verify(locationCategoryRepository).save(captor.capture());
@@ -87,7 +87,7 @@ class LocationCategoryServiceTest {
                 thenReturn(Optional.of(
                         createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
         when(cityService.saveCity(any(String.class))).thenReturn(createCity(200L));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
         ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
         verify(locationCategoryRepository).save(captor.capture());
         LocationCategory lc = captor.getValue();
@@ -100,7 +100,7 @@ class LocationCategoryServiceTest {
                 thenReturn(Optional.of(
                         createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
         when(cityService.saveCity(any(String.class))).thenReturn(createCity(30L));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
         verify(locationCategoryRepository, never()).save(any(LocationCategory.class));
     }
 
