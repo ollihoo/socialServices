@@ -25,4 +25,9 @@ public class Category {
         if (! (o instanceof Category other)) return false;
         return id == other.id && name.equals(other.name);
     }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
