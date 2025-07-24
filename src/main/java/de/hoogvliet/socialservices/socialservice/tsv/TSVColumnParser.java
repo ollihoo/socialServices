@@ -64,7 +64,7 @@ public class TSVColumnParser {
             return null;
         }
         try {
-            URI uri = URI.create(entry[COLUMN_WEBSITE]);
+            URI uri = URI.create(entry[COLUMN_WEBSITE].strip());
             return uri.toURL();
         } catch (IllegalArgumentException | MalformedURLException e) {
             log.warn("Please check tsv input: {}", e.getMessage());
