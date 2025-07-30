@@ -1,5 +1,6 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import de.hoogvliet.socialservices.socialservice.tsv.TSVLocationHandling;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,66 +43,9 @@ class LocationCategoryServiceTest {
     }
 
     @Test
-    public void forAGivenLocationEveryCategoryCombinationIsChecked() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository, times(1)).findByLocationIdAndCategoryId(LOCATION_ID, CATEGORY_ID);
-    }
-
-    @Test
-    public void forAGivenLocationTheCityNameIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(cityService).saveCity(ANY_CITY_NAME);
-    }
-
-    @Test
-    public void ifLocationCategoryCombinationDoesNotExistItIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.empty());
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository).save(any(LocationCategory.class));
-    }
-
-    @Test
-    public void whenCityIsNotSetInLCItWillBeUpdated() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(34L));
-
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-
-        ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
-        verify(locationCategoryRepository).save(captor.capture());
-        assertEquals(34L, captor.getValue().getCity().getId());
-    }
-
-    @Test
-    public void whenCityDiffersFromLocationItIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.of(
-                        createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(200L));
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
-        verify(locationCategoryRepository).save(captor.capture());
-        LocationCategory lc = captor.getValue();
-        assertEquals(200L, lc.getCity().getId());
-    }
-
-    @Test
-    void whenCityIsIdenticalDataWillNotSaved () {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.of(
-                        createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(30L));
-        locationCategoryService.doCrudOperation(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository, never()).save(any(LocationCategory.class));
+    void deleteOrphanedEntries_removes_all_locations_without_categories() {
+        locationCategoryService.deleteOrphanedEntries();
+        verify(locationCategoryRepository, times(1)).deleteOrphanedLocationMappings();
     }
 
     private List<Category> createCategoryList() {

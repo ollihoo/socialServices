@@ -21,7 +21,7 @@ public class CheckTSVDataForUpdates {
     public void parseTsvFileAndDoUpdates() {
         List<Location> locations = tsvParser.getAllEntriesFromTSV();
         log.info("Found and checked {} locations.", locations.size());
-        locationCategoryService.updateCityEntries();
+        locationCategoryService.updateEntriesWithoutCityId();
         locationCategoryService.deleteOrphanedEntries();
         cityService.deleteOrphanedCities();
     }

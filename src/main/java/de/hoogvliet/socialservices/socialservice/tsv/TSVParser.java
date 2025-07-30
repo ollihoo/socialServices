@@ -21,10 +21,7 @@ public class TSVParser {
     @Value("${application.tsv.pattern}")
     private String TSV_PATTERN;
 
-    private final LocationMaintenanceService locationMaintenanceService;
-    private final TSVCategoryParser categoryParser;
-    private final LocationCategoryService locationCategoryService;
-    private final CityService cityService;
+    private final TSVLocationHandling tsvLocationHandling;
 
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
@@ -41,7 +38,7 @@ public class TSVParser {
         try (BufferedReader br = openReader(resource)) {
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("Zeitstempel")) {
-                    Location location = getOrCreateLocation(line.split("\t"));
+                    Location location = tsvLocationHandling.getOrCreateLocation(line.split("\t"));
                     if (location != null) {
                         locations.add(location);
                     } else {
@@ -86,15 +83,5 @@ public class TSVParser {
         return new BufferedReader(reader);
     }
 
-    private Location getOrCreateLocation(String[] columns) {
-        Location location = locationMaintenanceService.createOrUpdateLocation(columns);
-        if (location != null) {
-            List<Category> categories = categoryParser.getOrCreateCategories(columns);
-            City city = cityService.saveCity(location.getCity());
-            locationCategoryService.addOrUpdateCategories(location, categories, city);
-            locationCategoryService.removeOutdatedCategoriesForLocation(location, categories);
-            return location;
-        }
-        return null;
-    }
+
 }

@@ -13,13 +13,7 @@ public class LocationCategoryService {
     private final LocationCategoryRepository locationCategoryRepository;
     private final CityService cityService;
 
-    public void doCrudOperation(Location location, List<Category> categories) {
-        City city = cityService.saveCity(location.getCity());
-        addOrUpdateCategories(location, categories, city);
-        removeOutdatedCategoriesForLocation(location, categories);
-    }
-
-    public void updateCityEntries() {
+    public void updateEntriesWithoutCityId() {
         locationCategoryRepository.findByCityId(null).forEach(locationCategory -> {
             String cityName = locationCategory.getLocation().getCity();
             City city = cityService.saveCity(cityName);
