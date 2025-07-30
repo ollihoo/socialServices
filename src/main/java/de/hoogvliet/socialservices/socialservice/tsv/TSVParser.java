@@ -1,7 +1,6 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
-import de.hoogvliet.socialservices.socialservice.Location;
-import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
+import de.hoogvliet.socialservices.socialservice.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +24,7 @@ public class TSVParser {
     private final LocationMaintenanceService locationMaintenanceService;
     private final TSVCategoryParser categoryParser;
     private final LocationCategoryService locationCategoryService;
+    private final CityService cityService;
 
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
@@ -89,7 +89,10 @@ public class TSVParser {
     private Location getOrCreateLocation(String[] columns) {
         Location location = locationMaintenanceService.createOrUpdateLocation(columns);
         if (location != null) {
-            locationCategoryService.doCrudOperation(location, categoryParser.getOrCreateCategories(columns));
+            List<Category> categories = categoryParser.getOrCreateCategories(columns);
+            City city = cityService.saveCity(location.getCity());
+            locationCategoryService.addOrUpdateCategories(location, categories, city);
+            locationCategoryService.removeOutdatedCategoriesForLocation(location, categories);
             return location;
         }
         return null;

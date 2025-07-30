@@ -19,28 +19,6 @@ public class LocationCategoryService {
         removeOutdatedCategoriesForLocation(location, categories);
     }
 
-    private void removeOutdatedCategoriesForLocation(Location location, List<Category> categories) {
-        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
-        currentCategories.forEach(category -> {
-            if (! categories.contains(category)) {
-                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
-                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
-            }
-        });
-    }
-
-    private void addOrUpdateCategories(Location location, List<Category> categories, City city) {
-        categories.forEach(category -> {
-            Optional<LocationCategory> optionalLocationCategory =
-                    locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
-            if (optionalLocationCategory.isEmpty()) {
-                createLocationCategory(location, category, city);
-                return;
-            }
-            updateCityEntry(optionalLocationCategory.get(), city);
-        });
-    }
-
     public void updateCityEntries() {
         locationCategoryRepository.findByCityId(null).forEach(locationCategory -> {
             String cityName = locationCategory.getLocation().getCity();
@@ -52,6 +30,28 @@ public class LocationCategoryService {
 
     public void deleteOrphanedEntries() {
         locationCategoryRepository.deleteOrphanedLocationMappings();
+    }
+
+    public void removeOutdatedCategoriesForLocation(Location location, List<Category> categories) {
+        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
+        currentCategories.forEach(category -> {
+            if (! categories.contains(category)) {
+                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
+                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
+            }
+        });
+    }
+
+    public void addOrUpdateCategories(Location location, List<Category> categories, City city) {
+        categories.forEach(category -> {
+            Optional<LocationCategory> optionalLocationCategory =
+                    locationCategoryRepository.findByLocationIdAndCategoryId(location.getId(), category.getId());
+            if (optionalLocationCategory.isEmpty()) {
+                createLocationCategory(location, category, city);
+                return;
+            }
+            updateCityEntry(optionalLocationCategory.get(), city);
+        });
     }
 
     private void updateCityEntry(LocationCategory locationCategory, City city) {
