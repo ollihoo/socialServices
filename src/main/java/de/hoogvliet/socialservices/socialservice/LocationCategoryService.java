@@ -26,12 +26,12 @@ public class LocationCategoryService {
         locationCategoryRepository.deleteOrphanedLocationMappings();
     }
 
-    public void removeOutdatedCategoriesForLocation(Location location, List<Category> categories) {
-        List<Category> currentCategories = locationCategoryRepository.findCategoriesByLocationId(location.getId());
-        currentCategories.forEach(category -> {
-            if (! categories.contains(category)) {
-                log.info("Deleting category {} {} for location {}", category.getId(), category.getName(), location.getName());
-                locationCategoryRepository.deleteByCategoryIdAndLocationId(category.getId(), location.getId());
+    public void removeOutdatedCategoriesForLocation(Location location, List<Category> correctCategories) {
+        List<Category> categoriesInDb = locationCategoryRepository.findCategoriesByLocationId(location.getId());
+        categoriesInDb.forEach(categoryInQuestion -> {
+            if (! correctCategories.contains(categoryInQuestion)) {
+                log.info("Deleting category '({}) {}' for location {}", categoryInQuestion.getId(), categoryInQuestion.getName(), location.getName());
+                locationCategoryRepository.deleteByCategoryIdAndLocationId(categoryInQuestion.getId(), location.getId());
             }
         });
     }

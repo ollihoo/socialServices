@@ -1,32 +1,22 @@
 package de.hoogvliet.socialservices.socialservice;
 
-import de.hoogvliet.socialservices.socialservice.tsv.TSVLocationHandling;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LocationCategoryServiceTest {
     private final long LOCATION_ID = 2L;
     private final int CATEGORY_ID = 25;
+    private final String CATEGORY_NAME = "Beratung";
 
     private static final String ANY_CITY_NAME = "Rotterdam";
-
-    private List<Category> GIVEN_CATEGORIES;
-    private Location GIVEN_LOCATION;
-    private Category GIVEN_CATEGORY;
 
     @Mock
     private CityService cityService;
@@ -35,24 +25,43 @@ class LocationCategoryServiceTest {
     @InjectMocks
     private LocationCategoryService locationCategoryService;
 
-    @BeforeEach
-    public void setup() {
-        GIVEN_LOCATION = createLocation();
-        GIVEN_CATEGORY = createCategory();
-        GIVEN_CATEGORIES = createCategoryList();
-    }
-
     @Test
     void deleteOrphanedEntries_removes_all_locations_without_categories() {
         locationCategoryService.deleteOrphanedEntries();
         verify(locationCategoryRepository, times(1)).deleteOrphanedLocationMappings();
     }
 
-    private List<Category> createCategoryList() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(GIVEN_CATEGORY);
-        return categories;
+    @Test
+    void updateEntriesWithoutCityId_search_for_entries_with_cityId_null() {
+        List<LocationCategory> lcList = List.of(createLocationCategory());
+        when(locationCategoryRepository.findByCityId(eq(null))).thenReturn(lcList);
+
+        locationCategoryService.updateEntriesWithoutCityId();
+
+        verify(locationCategoryRepository).findByCityId(null);
     }
+
+    @Test
+    void removeOutdatedCategories_same_entry_in_Db_nothing_is_deleted() {
+        List<Category> dbCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        List<Category> recentCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        when(locationCategoryRepository.findCategoriesByLocationId(anyLong())).thenReturn(dbCategories);
+
+        locationCategoryService.removeOutdatedCategoriesForLocation(createLocation(), recentCategories);
+        verify(locationCategoryRepository, never()).deleteByCategoryIdAndLocationId(CATEGORY_ID, LOCATION_ID);
+    }
+
+    @Test
+    void removeOutdatedCategories_outdated_entry_is_deleted() {
+        Location location = createLocation();
+        List<Category> dbCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        List<Category> recentCategories = List.of(createCategory(26, "another category"));
+        when(locationCategoryRepository.findCategoriesByLocationId(anyLong())).thenReturn(dbCategories);
+
+        locationCategoryService.removeOutdatedCategoriesForLocation(location, recentCategories);
+        verify(locationCategoryRepository).deleteByCategoryIdAndLocationId(CATEGORY_ID, LOCATION_ID);
+    }
+
 
     private Location createLocation() {
         Location location = new Location();
@@ -61,23 +70,25 @@ class LocationCategoryServiceTest {
         return location;
     }
 
-    private Category createCategory() {
+    private Category createCategory(int categoryId, String categoryName) {
         Category category = new Category();
-        category.setId(CATEGORY_ID);
+        category.setId(categoryId);
+        category.setName(categoryName);
         return category;
     }
 
-    private static City createCity(long cityId) {
-        City VALID_CITY = new City();
-        VALID_CITY.setId(cityId);
-        return VALID_CITY;
+    private City createCity() {
+        City city = new City();
+        city.setId(59L);
+        city.setName(ANY_CITY_NAME);
+        return city;
     }
 
-    private LocationCategory createLocationCategory(Location location, Category category, City city) {
+    private LocationCategory createLocationCategory() {
         LocationCategory locationCategory = new LocationCategory();
-        locationCategory.setLocation(location);
-        locationCategory.setCategory(category);
-        locationCategory.setCity(city);
+        locationCategory.setLocation(createLocation());
+        locationCategory.setCategory(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        locationCategory.setCity(createCity());
         return locationCategory;
     }
 
