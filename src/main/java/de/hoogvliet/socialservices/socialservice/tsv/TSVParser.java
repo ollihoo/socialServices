@@ -1,7 +1,6 @@
 package de.hoogvliet.socialservices.socialservice.tsv;
 
-import de.hoogvliet.socialservices.socialservice.Location;
-import de.hoogvliet.socialservices.socialservice.LocationCategoryService;
+import de.hoogvliet.socialservices.socialservice.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +21,7 @@ public class TSVParser {
     @Value("${application.tsv.pattern}")
     private String TSV_PATTERN;
 
-    private final LocationMaintenanceService locationMaintenanceService;
-    private final TSVCategoryParser categoryParser;
-    private final LocationCategoryService locationCategoryService;
+    private final TSVLocationHandling tsvLocationHandling;
 
     public List<Location> getAllEntriesFromTSV() {
         List<Location> locations = new ArrayList<>();
@@ -41,7 +38,7 @@ public class TSVParser {
         try (BufferedReader br = openReader(resource)) {
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("Zeitstempel")) {
-                    Location location = getOrCreateLocation(line.split("\t"));
+                    Location location = tsvLocationHandling.getOrCreateLocation(line.split("\t"));
                     if (location != null) {
                         locations.add(location);
                     } else {
@@ -86,12 +83,5 @@ public class TSVParser {
         return new BufferedReader(reader);
     }
 
-    private Location getOrCreateLocation(String[] columns) {
-        Location location = locationMaintenanceService.createOrUpdateLocation(columns);
-        if (location != null) {
-            locationCategoryService.save(location, categoryParser.getOrCreateCategories(columns));
-            return location;
-        }
-        return null;
-    }
+
 }
