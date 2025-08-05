@@ -31,4 +31,11 @@ DELETE FROM location_category WHERE id in (
     """, nativeQuery = true)
     void deleteOrphanedLocationMappings();
 
+    @Query("SELECT lc.category from LocationCategory lc WHERE lc.location.id = :locationId")
+    List<Category> findCategoriesByLocationId(long locationId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM LocationCategory lc WHERE lc.location.id = :locationId AND lc.category.id = :categoryId")
+    void deleteByCategoryIdAndLocationId(int categoryId, long locationId);
 }

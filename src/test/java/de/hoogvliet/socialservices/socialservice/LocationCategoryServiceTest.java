@@ -1,6 +1,5 @@
 package de.hoogvliet.socialservices.socialservice;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -8,24 +7,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LocationCategoryServiceTest {
+    private static final String ANY_CITY_NAME = "Rotterdam";
+    private static final long ANY_CITY_ID = 59L;
     private final long LOCATION_ID = 2L;
     private final int CATEGORY_ID = 25;
-
-    private static final String ANY_CITY_NAME = "Rotterdam";
-
-    private List<Category> GIVEN_CATEGORIES;
-    private Location GIVEN_LOCATION;
-    private Category GIVEN_CATEGORY;
+    private final String CATEGORY_NAME = "Beratung";
 
     @Mock
     private CityService cityService;
@@ -34,80 +28,94 @@ class LocationCategoryServiceTest {
     @InjectMocks
     private LocationCategoryService locationCategoryService;
 
-    @BeforeEach
-    public void setup() {
-        GIVEN_LOCATION = createLocation();
-        GIVEN_CATEGORY = createCategory();
-        GIVEN_CATEGORIES = createCategoryList();
+    @Test
+    void deleteOrphanedEntries_removes_all_locations_without_categories() {
+        locationCategoryService.deleteOrphanedEntries();
+        verify(locationCategoryRepository, times(1)).deleteOrphanedLocationMappings();
     }
 
     @Test
-    public void forAGivenLocationEveryCategoryCombinationIsChecked() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository, times(1)).findByLocationIdAndCategoryId(LOCATION_ID, CATEGORY_ID);
+    void updateEntriesWithoutCityId_search_for_entries_with_cityId_null() {
+        List<LocationCategory> lcList = List.of(createLocationCategory());
+        when(locationCategoryRepository.findByCityId(eq(null))).thenReturn(lcList);
+
+        locationCategoryService.updateEntriesWithoutCityId();
+
+        verify(locationCategoryRepository).findByCityId(null);
     }
 
     @Test
-    public void forAGivenLocationTheCityNameIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+    void updateEntriesWithoutCityId_saves_cities() {
+        List<LocationCategory> lcList = List.of(createLocationCategory());
+        when(locationCategoryRepository.findByCityId(eq(null))).thenReturn(lcList);
+
+        locationCategoryService.updateEntriesWithoutCityId();
+
         verify(cityService).saveCity(ANY_CITY_NAME);
     }
 
     @Test
-    public void ifLocationCategoryCombinationDoesNotExistItIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.empty());
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository).save(any(LocationCategory.class));
-    }
+    void updateEntriesWithoutCityId_saves_city_in_locationCategories() {
+        City expectedCity = createCity();
+        List<LocationCategory> lcList = List.of(createLocationCategory());
 
-    @Test
-    public void whenCityIsNotSetInLCItWillBeUpdated() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(
-                        Optional.of(createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, null)));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(34L));
-
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+        when(locationCategoryRepository.findByCityId(eq(null))).thenReturn(lcList);
+        when(cityService.saveCity(anyString())).thenReturn(expectedCity);
+        locationCategoryService.updateEntriesWithoutCityId();
 
         ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
         verify(locationCategoryRepository).save(captor.capture());
-        assertEquals(34L, captor.getValue().getCity().getId());
+        assertEquals(expectedCity, captor.getValue().getCity());
     }
 
     @Test
-    public void whenCityDiffersFromLocationItIsSaved() {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.of(
-                        createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(200L));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
+    void removeOutdatedCategories_same_entry_in_Db_nothing_is_deleted() {
+        List<Category> dbCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        List<Category> recentCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        when(locationCategoryRepository.findCategoriesByLocationId(anyLong())).thenReturn(dbCategories);
+
+        locationCategoryService.removeOutdatedCategoriesForLocation(createLocation(), recentCategories);
+        verify(locationCategoryRepository, never()).deleteByCategoryIdAndLocationId(CATEGORY_ID, LOCATION_ID);
+    }
+
+    @Test
+    void removeOutdatedCategories_outdated_entry_is_deleted() {
+        Location location = createLocation();
+        List<Category> dbCategories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+        List<Category> recentCategories = List.of(createCategory(26, "another category"));
+        when(locationCategoryRepository.findCategoriesByLocationId(anyLong())).thenReturn(dbCategories);
+
+        locationCategoryService.removeOutdatedCategoriesForLocation(location, recentCategories);
+        verify(locationCategoryRepository).deleteByCategoryIdAndLocationId(CATEGORY_ID, LOCATION_ID);
+    }
+    @Test
+    void addOrUpdateCategories_checks_against_database () {
+        City city = createCity();
+        Location location = createLocation();
+        List<Category> categories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+
+        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt()))
+                .thenReturn(Optional.of(createLocationCategory()));
+
+        locationCategoryService.addOrUpdateCategories(location, categories, city);
+        verify(locationCategoryRepository).findByLocationIdAndCategoryId(LOCATION_ID, CATEGORY_ID);
+    }
+
+    @Test
+    void addOrUpdateCategories_sets_missing_city_entry () {
+        LocationCategory locationCategoryInDb = createLocationCategory(null);
+        City city = createCity();
+        Location location = createLocation();
+        List<Category> categories = List.of(createCategory(CATEGORY_ID, CATEGORY_NAME));
+
+        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt()))
+                .thenReturn(Optional.of(locationCategoryInDb));
+
+        locationCategoryService.addOrUpdateCategories(location, categories, city);
+
         ArgumentCaptor<LocationCategory> captor = ArgumentCaptor.forClass(LocationCategory.class);
         verify(locationCategoryRepository).save(captor.capture());
-        LocationCategory lc = captor.getValue();
-        assertEquals(200L, lc.getCity().getId());
-    }
-
-    @Test
-    void whenCityIsIdenticalDataWillNotSaved () {
-        when(locationCategoryRepository.findByLocationIdAndCategoryId(anyLong(), anyInt())).
-                thenReturn(Optional.of(
-                        createLocationCategory(GIVEN_LOCATION, GIVEN_CATEGORY, createCity(30L))));
-        when(cityService.saveCity(any(String.class))).thenReturn(createCity(30L));
-        locationCategoryService.save(GIVEN_LOCATION, GIVEN_CATEGORIES);
-        verify(locationCategoryRepository, never()).save(any(LocationCategory.class));
-    }
-
-    private List<Category> createCategoryList() {
-        List<Category> categories = new ArrayList<>();
-        categories.add(GIVEN_CATEGORY);
-        return categories;
+        assertEquals(ANY_CITY_ID, captor.getValue().getCity().getId());
     }
 
     private Location createLocation() {
@@ -117,24 +125,31 @@ class LocationCategoryServiceTest {
         return location;
     }
 
-    private Category createCategory() {
+    private Category createCategory(int categoryId, String categoryName) {
         Category category = new Category();
-        category.setId(CATEGORY_ID);
+        category.setId(categoryId);
+        category.setName(categoryName);
         return category;
     }
 
-    private static City createCity(long cityId) {
-        City VALID_CITY = new City();
-        VALID_CITY.setId(cityId);
-        return VALID_CITY;
+    private City createCity() {
+        City city = new City();
+        city.setId(ANY_CITY_ID);
+        city.setName(ANY_CITY_NAME);
+        return city;
     }
 
-    private LocationCategory createLocationCategory(Location location, Category category, City city) {
+    private LocationCategory createLocationCategory() {
+        return createLocationCategory(createCity());
+    }
+
+    private LocationCategory createLocationCategory(City city) {
         LocationCategory locationCategory = new LocationCategory();
-        locationCategory.setLocation(location);
-        locationCategory.setCategory(category);
+        locationCategory.setLocation(createLocation());
+        locationCategory.setCategory(createCategory(CATEGORY_ID, CATEGORY_NAME));
         locationCategory.setCity(city);
         return locationCategory;
+
     }
 
 }
