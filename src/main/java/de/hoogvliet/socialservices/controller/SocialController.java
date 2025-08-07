@@ -4,6 +4,11 @@ import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -46,6 +51,69 @@ public class SocialController {
     @ResponseBody
     public List<City> getCities() {
         return socialServices.getCities();
+    }
+
+    @Operation(summary = "Create a new category", description = "Creates a new category", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Created - Category created"),
+        @ApiResponse(responseCode = "409", description = "Conflict - Category already exists"),
+    })
+    @PostMapping("/category")
+    @ResponseBody
+    public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
+        //TODO: Implement the logic to create a new category
+        log.error("POST `category` not yet implemented");
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @Operation(summary = "Read a category by ID", description = "Retrieves a category by its ID", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Category retrieved"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
+            schema = @Schema(implementation = Void.class)
+        )),
+    })
+    @GetMapping("/category/{id}")
+    @ResponseBody
+    public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
+        //TODO: Implement the logic to get a category by ID
+        log.error("GET `category` not yet implemented");
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+
+    @Operation(summary = "Read all categories", description = "Retrieves all categories", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Categories retrieved")
+    })
+    @GetMapping("/category")
+    @ResponseBody
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(socialServices.getCategories());
+    }
+
+    @Operation(summary = "Update an existing category", description = "Updates the name of an existing category", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Category updated"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
+            schema = @Schema(implementation = Void.class)
+        ))
+    })
+    @PutMapping("/category")
+    public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
+       //TODO: Implement the logic to update an existing category
+       log.error("PUT `category` not yet implemented");
+       return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+    }
+    @Operation(summary = "Delete a category by ID", description = "Deletes a category by ID", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "No Content - Category deleted"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found")
+    })
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
+        //TODO: Implement the logic to delete a category by ID
+        log.error("DELETE `category` not yet implemented");
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
