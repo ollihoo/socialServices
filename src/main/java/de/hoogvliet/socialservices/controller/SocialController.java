@@ -1,6 +1,7 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.Category;
+import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
@@ -18,10 +19,12 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
     private final SocialServices socialServices;
+    private final CategoryRepository categoryRepository;
 
     @GetMapping("/social")
     @ResponseBody
@@ -61,9 +64,20 @@ public class SocialController {
     @PostMapping("/category")
     @ResponseBody
     public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
-        //TODO: Implement the logic to create a new category
-        log.error("POST `category` not yet implemented");
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        String cleanName = categoryName
+            .replace("\"", "")
+            .replace(" und ", " & ")
+            .replaceAll(" \\s+", " ")
+            .strip();
+        try {
+            Category existingCategory = categoryRepository.findByName(cleanName).get();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory);
+        } catch(NoSuchElementException e) {
+            Category category = new Category();
+            category.setName(cleanName);
+            Category newCategory = categoryRepository.save(category);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
+        }
     }
 
     @Operation(summary = "Read a category by ID", description = "Retrieves a category by its ID", tags = "Category-CRUD")
