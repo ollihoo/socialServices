@@ -37,8 +37,7 @@ public class OSMSearchClient {
     private static List<OsmCity> requestOsmCity(URI uri) throws IOException, InterruptedException {
         HttpRequest request = createRequest(uri);
 
-        HttpClient client = HttpClient.newHttpClient();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             ObjectMapper mapper = getObjectMapper();
@@ -59,8 +58,7 @@ public class OSMSearchClient {
     private static List<OsmLocation> requestOsmData(URI uri) throws IOException, InterruptedException {
         HttpRequest request = createRequest(uri);
 
-        HttpClient client = HttpClient.newHttpClient();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             ObjectMapper mapper = getObjectMapper();
@@ -74,9 +72,8 @@ public class OSMSearchClient {
     }
 
     private static ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper()
+        return new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper;
     }
 
     private static HttpRequest createRequest(URI uri) {
