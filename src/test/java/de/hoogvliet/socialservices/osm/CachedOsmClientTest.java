@@ -20,7 +20,6 @@ class CachedOsmClientTest {
     private static final String ANY_STREET = "Straße 34";
     private static final String ANY_POSTAL_CODE = "13353 AD";
     private static final String ANY_CITY = "Berlin/Wedding";
-    private static final List<OsmLocation> ANY_RESULT = Collections.EMPTY_LIST;
     @InjectMocks
     private CachedOsmClient cachedOsmClient;
     @Mock
@@ -33,7 +32,7 @@ class CachedOsmClientTest {
     private OsmMapper osmMapper;
 
     @Test
-    void whenCacheFails_GetOsmDataFromOsmSearchClient() throws IOException, URISyntaxException, InterruptedException {
+    void when_cache_fails_get_data_from_getOsmLocationData() throws IOException, URISyntaxException, InterruptedException {
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
         cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
@@ -41,12 +40,13 @@ class CachedOsmClientTest {
     }
 
     @Test
-    void whenCacheFails_ResultIsWrittenToCache() throws IOException, URISyntaxException, InterruptedException {
+    void when_cache_fails_response_Is_written_into_cache_file() throws IOException, URISyntaxException, InterruptedException {
+        List<OsmLocation> anyData = Collections.emptyList();
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        when(osmSearchClient.getOsmLocationData(anyString(), anyString(), anyString())).thenReturn(ANY_RESULT);
+        when(osmSearchClient.getOsmLocationData(anyString(), anyString(), anyString())).thenReturn(anyData);
         cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmMapper).write(ANY_RESULT, cachedResource);
+        verify(osmMapper).write(anyData, cachedResource);
     }
 
     @Test

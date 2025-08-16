@@ -32,7 +32,7 @@ public class ScheduledGeoCoder {
         try {
             List<OsmLocation> osmData = osmSearchClient.getOsmData(loc.getAddress(), loc.getPostCode(), loc.getCity());
             if (osmData.size() == 1) {
-                saveLocation(loc, osmData.get(0));
+                saveLocation(loc, osmData.getFirst());
             } else {
                 log.warn("Ambiguous data for '{}'. Data was {}, but not 1.", loc.getAddress(), osmData.size());
                 for (OsmLocation osmLocation : osmData) {

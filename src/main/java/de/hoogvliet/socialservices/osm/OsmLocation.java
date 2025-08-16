@@ -1,11 +1,8 @@
 package de.hoogvliet.socialservices.osm;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.jackson.JsonComponent;
-
-import java.util.Map;
 
 @JsonComponent @Getter @Setter
 public class OsmLocation extends OsmCity {
