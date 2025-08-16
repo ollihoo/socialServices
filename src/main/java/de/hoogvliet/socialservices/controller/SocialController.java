@@ -135,9 +135,14 @@ public class SocialController {
     })
     @DeleteMapping("/category/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
-        //TODO: Implement the logic to delete a category by ID
-        log.error("DELETE `category` not yet implemented");
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        try {
+            categoryRepository.findById(id).get();
+            categoryRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            log.warn("Category not found: " + id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
