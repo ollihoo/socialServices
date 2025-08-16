@@ -18,6 +18,11 @@ public class CacheConfiguration {
         return resourceLoader.getResource(OSM_CACHE_PATH + "/" + cacheFileName);
     }
 
+    public Resource getCacheResource(String city) {
+        String cacheFileName = city + "_germany.json";
+        return resourceLoader.getResource(OSM_CACHE_PATH + "/" + cacheFileName);
+    }
+
     private static String getCacheFileName(String street, String postalCode, String city) {
         String name = city + "_" + postalCode + "_" + street + ".json";
         return name.replaceAll("/", "").replaceAll(" ", "");

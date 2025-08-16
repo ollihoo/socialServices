@@ -24,13 +24,13 @@ public class OSMSearchClient {
     public static final int NOMINATIM_PORT = 443;
 
 
-    public List<OsmCity> getOsmCityData(String city) throws IOException, InterruptedException, URISyntaxException {
+    public List<OsmCity> getOsmCities(String city) throws IOException, InterruptedException, URISyntaxException {
         URI uri = getCityRequestUri(city);
         HttpResponse<String> response = getOsmResponse(uri);
         return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
     }
 
-    public List<OsmLocation> getOsmLocation(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
+    public List<OsmLocation> getOsmLocations(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
         URI uri = getLocationRequestUri(street, postalCode, city);
         HttpResponse<String> response = getOsmResponse(uri);
         return getObjectMapper().readValue(response.body(), new TypeReference<>() {});

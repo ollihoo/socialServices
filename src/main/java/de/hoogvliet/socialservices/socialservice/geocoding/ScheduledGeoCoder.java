@@ -30,7 +30,7 @@ public class ScheduledGeoCoder {
         }
 
         try {
-            List<OsmLocation> osmData = osmSearchClient.getOsmLocation(loc.getAddress(), loc.getPostCode(), loc.getCity());
+            List<OsmLocation> osmData = osmSearchClient.getOsmLocations(loc.getAddress(), loc.getPostCode(), loc.getCity());
             if (osmData.size() == 1) {
                 saveLocation(loc, osmData.getFirst());
             } else {
