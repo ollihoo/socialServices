@@ -15,32 +15,41 @@ public class CachedOsmClient {
     private final CacheConfiguration cacheConfig;
 
     public boolean locationHasBeenParsed(String street, String postalCode, String city) {
-        Resource cacheResource = cacheConfig.getCacheResource(street, postalCode, city);
-        return cacheResource.exists();
+        Resource cacheFile = cacheConfig.getCacheResource(street, postalCode, city);
+        return cacheFile.exists();
     }
 
-    public List<OsmLocation> getOsmData(String street, String postalCode, String city) {
-        Resource resource = cacheConfig.getCacheResource(street, postalCode, city);
-        if (resource.exists()) {
-            try {
-                return osmMapper.get(resource);
-            } catch (IOException e) {
-                log.warn("Couldn't use file {}. Error: {}", resource.getFilename(), e.getMessage());
-                throw new RuntimeException(e);
-            }
+    public List<OsmLocation> getOsmLocation(String street, String postalCode, String city) {
+        Resource cacheFile = cacheConfig.getCacheResource(street, postalCode, city);
+        if (cacheFile.exists()) {
+            return getOsmLocationFromCache(cacheFile);
         } else {
             try {
-                List<OsmLocation> osmData = osmSearchClient.getOsmLocationData(street, postalCode, city);
-                osmMapper.write(osmData, resource);
-                return osmData;
-            } catch (Exception e) {
-                log.warn("Unable to get OSM data for {},{}. Error: {}", street, city, e.getMessage());
-                log.warn(e.toString());
-                throw new RuntimeException(e);
+                List<OsmLocation> osmLocation = getOsmLocationFromClient(street, postalCode, city);
+                osmMapper.write(osmLocation, cacheFile);
+                return osmLocation;
+            } catch (IOException e) {
+                throw new OsmException("Can't read data from OSM", e);
             }
         }
     }
 
+    private List<OsmLocation> getOsmLocationFromClient(String street, String postalCode, String city) {
+        try {
+            return osmSearchClient.getOsmLocation(street, postalCode, city);
+        } catch (Exception e) {
+            log.warn("Unable to get OSM location for {},{}. Error: {}", street, city, e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
 
+    private List<OsmLocation> getOsmLocationFromCache(Resource cacheFile) {
+        try {
+            return osmMapper.get(cacheFile);
+        } catch (IOException e) {
+            log.warn("Couldn't use cache file {}. Error: {}", cacheFile.getFilename(), e.getMessage());
+            throw new OsmException("There is a problem with the cache file", e);
+        }
+    }
 
 }

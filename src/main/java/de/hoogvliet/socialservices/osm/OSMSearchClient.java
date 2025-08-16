@@ -30,7 +30,7 @@ public class OSMSearchClient {
         return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
     }
 
-    public List<OsmLocation> getOsmLocationData(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
+    public List<OsmLocation> getOsmLocation(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
         URI uri = getLocationRequestUri(street, postalCode, city);
         HttpResponse<String> response = getOsmResponse(uri);
         return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
