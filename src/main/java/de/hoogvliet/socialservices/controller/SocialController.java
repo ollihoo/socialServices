@@ -118,9 +118,15 @@ public class SocialController {
     })
     @PutMapping("/category")
     public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
-       //TODO: Implement the logic to update an existing category
-       log.error("PUT `category` not yet implemented");
-       return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        int catId = category.getId();
+        try{
+            categoryRepository.findById(catId).get();
+            Category updatedCategory = categoryRepository.save(category);
+            return ResponseEntity.ok(updatedCategory);
+        } catch(NoSuchElementException e) {
+            log.warn("Category not found: " + catId);
+            return ResponseEntity.notFound().build();
+        }
     }
     @Operation(summary = "Delete a category by ID", description = "Deletes a category by ID", tags = "Category-CRUD")
     @ApiResponses(value = {
