@@ -1,6 +1,7 @@
 package de.hoogvliet.socialservices.thirdparty;
 
 import de.hoogvliet.socialservices.osm.OSMSearchClient;
+import de.hoogvliet.socialservices.osm.OsmCity;
 import de.hoogvliet.socialservices.osm.OsmLocation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,13 @@ public class OSMSearchClientTest {
         assertEquals("Friedrichstraße", res.getFirst().getRoad());
         assertEquals("10117", res.getFirst().getPostcode());
         assertEquals("Deutschland", res.getFirst().getCountry());
+    }
+
+    @Test
+    void get_answer_for_a_city() throws IOException, InterruptedException, URISyntaxException {
+        List<OsmCity> res = osmSearchClient.getOsmData("Frankfurt");
+        assertEquals("Frankfurt am Main", res.getFirst().getCity());
+        assertEquals("Frankfurt (Oder)", res.get(1).getCity());
     }
 
 }

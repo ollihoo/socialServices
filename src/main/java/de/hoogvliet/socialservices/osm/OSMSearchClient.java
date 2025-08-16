@@ -20,24 +20,63 @@ public class OSMSearchClient {
     private static final String USER_AGENT_IDENTIFIER = "de.locating.services.13353";
     public static final String NOMINATIM_HOST = "nominatim.openstreetmap.org";
     public static final String NOMINATIM_PATH = "/search.php";
+    public static final String SCHEME = "https";
+    public static final String USER_INFO = null;
+    public static final int NOMINATIM_PORT = 443;
 
 
-    public List<OsmLocation> getOsmData(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
-        URI uri = getRequestUri(street, postalCode, city);
+    public List<OsmCity> getOsmData(String city) throws IOException, InterruptedException, URISyntaxException {
+        URI uri = new URI (
+                SCHEME, USER_INFO, NOMINATIM_HOST, NOMINATIM_PORT, NOMINATIM_PATH,
+                "city=" + city+ "&country=Germany&format=json&addressdetails=1",
+                null
+        );
+        return requestOsmCity(uri);
+    }
+
+    private static List<OsmCity> requestOsmCity(URI uri) throws IOException, InterruptedException {
         HttpRequest request = createRequest(uri);
 
         HttpClient client = HttpClient.newHttpClient();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            ObjectMapper mapper = new ObjectMapper()
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ObjectMapper mapper = getObjectMapper();
             return mapper.readValue(response.body(),
-                    new TypeReference<>() {});
+                    new TypeReference<>() {
+                    });
         } catch (RuntimeException e) {
             log.error("Error during getting osm data: {}", e.getMessage());
             return Collections.emptyList();
         }
+    }
+
+    public List<OsmLocation> getOsmData(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
+        URI uri = getRequestUri(street, postalCode, city);
+        return requestOsmData(uri);
+    }
+
+    private static List<OsmLocation> requestOsmData(URI uri) throws IOException, InterruptedException {
+        HttpRequest request = createRequest(uri);
+
+        HttpClient client = HttpClient.newHttpClient();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper mapper = getObjectMapper();
+            return mapper.readValue(response.body(),
+                    new TypeReference<>() {
+                    });
+        } catch (RuntimeException e) {
+            log.error("Error during getting osm data: {}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    private static ObjectMapper getObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return mapper;
     }
 
     private static HttpRequest createRequest(URI uri) {
