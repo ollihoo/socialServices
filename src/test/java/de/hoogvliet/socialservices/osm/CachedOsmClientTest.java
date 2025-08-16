@@ -37,14 +37,14 @@ class CachedOsmClientTest {
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
         cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmSearchClient).getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmSearchClient).getOsmLocationData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
     }
 
     @Test
     void whenCacheFails_ResultIsWrittenToCache() throws IOException, URISyntaxException, InterruptedException {
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        when(osmSearchClient.getOsmData(anyString(), anyString(), anyString())).thenReturn(ANY_RESULT);
+        when(osmSearchClient.getOsmLocationData(anyString(), anyString(), anyString())).thenReturn(ANY_RESULT);
         cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
         verify(osmMapper).write(ANY_RESULT, cachedResource);
     }
@@ -54,7 +54,7 @@ class CachedOsmClientTest {
         when(cachedResource.exists()).thenReturn(true);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
         cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmSearchClient, never()).getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmSearchClient, never()).getOsmLocationData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
     }
 
     @Test

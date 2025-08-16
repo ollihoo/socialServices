@@ -30,7 +30,7 @@ public class CachedOsmClient {
             }
         } else {
             try {
-                List<OsmLocation> osmData = osmSearchClient.getOsmData(street, postalCode, city);
+                List<OsmLocation> osmData = osmSearchClient.getOsmLocationData(street, postalCode, city);
                 osmMapper.write(osmData, resource);
                 return osmData;
             } catch (Exception e) {
