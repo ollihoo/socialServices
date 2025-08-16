@@ -43,8 +43,8 @@ public class CachedOsmClient {
                 List<OsmCity> osmCities = getOsmCitiesFromClient(city);
                 osmMapper.write(osmCities, cacheFile);
                 return osmCities;
-            } catch (IOException e) {
-                throw new OsmException("Can't read data from OSM", e);
+            } catch (Exception e) {
+                throw new OsmException(e);
             }
         }
     }
@@ -72,7 +72,7 @@ public class CachedOsmClient {
         try {
             return osmMapper.getLocations(cacheFile);
         } catch (IOException e) {
-            log.warn("Couldn't use cache file {}. Error: {}", cacheFile.getFilename(), e.getMessage());
+            log.warn("Couldn't use locations cache file {}. Error: {}", cacheFile.getFilename(), e.getMessage());
             throw new OsmException("There is a problem with the cache file", e);
         }
     }
@@ -81,7 +81,7 @@ public class CachedOsmClient {
         try {
             return osmMapper.getCities(cacheFile);
         } catch (IOException e) {
-            log.warn("Couldn't use cache file {}. Error: {}", cacheFile.getFilename(), e.getMessage());
+            log.warn("Couldn't use cities cache file {}. Error: {}", cacheFile.getFilename(), e.getMessage());
             throw new OsmException("There is a problem with the cache file", e);
         }
     }
