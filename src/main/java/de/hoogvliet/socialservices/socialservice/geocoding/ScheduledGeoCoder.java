@@ -42,7 +42,7 @@ public class ScheduledGeoCoder {
                     } else {
                         log.warn("OSM entry is type {} for {} -> lat/lon {},{}",
                                 osmLocation.getType(),
-                                loc.getName(), osmLocation.getLat(), osmLocation.getLon());
+                                loc.getName(), osmLocation.getLatitude(), osmLocation.getLongitude());
                     }
                 }
             }
@@ -63,8 +63,8 @@ public class ScheduledGeoCoder {
     }
 
     private void saveLocation (Location loc, OsmLocation osmLocation) {
-        loc.setLatitude(osmLocation.getLat());
-        loc.setLongitude(osmLocation.getLon());
+        loc.setLatitude(osmLocation.getLatitude());
+        loc.setLongitude(osmLocation.getLongitude());
         locationRepository.save(loc);
         log.info("Updated location {} with lat/lon: {}/{}",
                 loc.getName(), loc.getLatitude(), loc.getLongitude());

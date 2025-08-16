@@ -21,7 +21,7 @@ public class OSMSearchClientTest {
     private OSMSearchClient osmSearchClient;
 
     @Test
-    void getsAnswerFromOSM() throws IOException, InterruptedException, URISyntaxException {
+    void gets_response_for_an_address() throws IOException, InterruptedException, URISyntaxException {
         List<OsmLocation> res = osmSearchClient.getOsmLocationData("Friedrichstr. 109", "10117", "Berlin");
         assertEquals("Berlin", res.getFirst().getCity());
         assertEquals("109", res.getFirst().getHouseNumber());
@@ -31,7 +31,7 @@ public class OSMSearchClientTest {
     }
 
     @Test
-    void get_answer_for_a_city() throws IOException, InterruptedException, URISyntaxException {
+    void get_response_for_a_city() throws IOException, InterruptedException, URISyntaxException {
         List<OsmCity> res = osmSearchClient.getOsmCityData("Frankfurt");
         assertEquals("Frankfurt am Main", res.getFirst().getCity());
         assertEquals("Frankfurt (Oder)", res.get(1).getCity());

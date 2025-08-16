@@ -8,20 +8,7 @@ import org.springframework.boot.jackson.JsonComponent;
 import java.util.Map;
 
 @JsonComponent @Getter @Setter
-public class OsmLocation {
-    @JsonProperty("osm_id")
-    private Long osmId;
-
-    @JsonProperty
-    private String type;
-
-    @JsonProperty
-    private Double lat;
-    @JsonProperty
-    private Double lon;
-
-    @JsonProperty("address")
-    private Map<String, String> address;
+public class OsmLocation extends OsmCity {
 
     public String getHouseNumber() {
         return address.get("house_number");
@@ -29,10 +16,6 @@ public class OsmLocation {
 
     public String getRoad() {
         return address.get("road");
-    }
-
-    public String getCity() {
-        return address.get("city");
     }
 
     public String getPostcode() {
