@@ -90,9 +90,13 @@ public class SocialController {
     @GetMapping("/category/{id}")
     @ResponseBody
     public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
-        //TODO: Implement the logic to get a category by ID
-        log.error("GET `category` not yet implemented");
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        try {
+            Category category = categoryRepository.findById(id).get();
+            return ResponseEntity.ok(category);
+        } catch(NoSuchElementException e) {
+            log.warn("Category not found: " + id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(summary = "Read all categories", description = "Retrieves all categories", tags = "Category-CRUD")
