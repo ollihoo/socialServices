@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Collections;
 import java.util.List;
 
 @Service @Slf4j
@@ -26,30 +25,18 @@ public class OSMSearchClient {
 
 
     public List<OsmCity> getOsmCityData(String city) throws IOException, InterruptedException, URISyntaxException {
-        URI uri = new URI (
-                SCHEME, USER_INFO, NOMINATIM_HOST, NOMINATIM_PORT, NOMINATIM_PATH,
-                "city=" + city+ "&country=Germany&format=json&addressdetails=1",
-                null
-        );
-
-        ObjectMapper mapper = getObjectMapper();
-        HttpResponse<String> response = requestOsmData(uri);
-        return mapper.readValue(response.body(),
-                new TypeReference<>() {
-                });
-
+        URI uri = getCityRequestUri(city);
+        HttpResponse<String> response = getOsmResponse(uri);
+        return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
     }
 
     public List<OsmLocation> getOsmLocationData(String street, String postalCode, String city) throws IOException, InterruptedException, URISyntaxException {
         URI uri = getLocationRequestUri(street, postalCode, city);
-        ObjectMapper mapper = getObjectMapper();
-        HttpResponse<String> response = requestOsmData(uri);
-        return mapper.readValue(response.body(),
-                new TypeReference<>() {
-                });
+        HttpResponse<String> response = getOsmResponse(uri);
+        return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
     }
 
-    private static HttpResponse<String> requestOsmData(URI uri) throws IOException, InterruptedException {
+    private static HttpResponse<String> getOsmResponse(URI uri) throws IOException, InterruptedException {
         HttpRequest request = createRequest(uri);
 
         try (HttpClient client = HttpClient.newHttpClient()) {
@@ -71,6 +58,14 @@ public class OSMSearchClient {
                 .uri(uri)
                 .header("User-Agent", USER_AGENT_IDENTIFIER)
                 .build();
+    }
+
+    private static URI getCityRequestUri(String city) throws URISyntaxException {
+        return new URI(
+                SCHEME, USER_INFO, NOMINATIM_HOST, NOMINATIM_PORT, NOMINATIM_PATH,
+                "city=" + city + "&country=Germany&format=json&addressdetails=1",
+                null
+        );
     }
 
     private static URI getLocationRequestUri(String street, String postalCode, String city) throws URISyntaxException {
