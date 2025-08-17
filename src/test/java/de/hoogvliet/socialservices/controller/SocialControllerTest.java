@@ -1,9 +1,15 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.Category;
+import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
+
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,20 +22,31 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 class SocialControllerTest {
     private static final String RESPONSE_MSG = "There is a problem with the parameters you entered.";
+    private static final String CATEGORY_NAME = "TEST-CATEGORY";
     private static final List<Category> ANY_CAT_LIST = Collections.emptyList();
     private static final List<Location> ANY_LOC_LIST = Collections.emptyList();
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private CategoryRepository categoryRepository;
     @MockBean
     private SocialServices socialServices;
+
+    @AfterAll
+    void cleanUp() {
+        categoryRepository.deleteAll();
+    }
 
     @Test
     void categoriesEndpointIsAccessible() throws Exception {
@@ -82,5 +99,19 @@ class SocialControllerTest {
         verify(socialServices).getLocationsByCategoryAndCity(17, 4);
     }
 
+    @Test
+    void categoryEndpointCreatesWithPost1stTime() throws Exception {
+        mockMvc.perform(post("/category")
+                .content(CATEGORY_NAME))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+    }
 
+    @Test
+    void categoryEndpointCreatesWithPost2ndTime() throws Exception {
+        mockMvc.perform(post("/category")
+                .content(CATEGORY_NAME))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+    }
 }
