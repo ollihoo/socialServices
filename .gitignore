@@ -5,7 +5,6 @@
 bin/
 build/
 src/main/resources/application.yml
-src/test/resources/application.yml
 docker/socialservices/*.db
 docker/socialservices/input/*
 !docker/socialservices/input/*TEMPLATE.tsv
