@@ -70,7 +70,7 @@ public class SocialController {
             .replaceAll(" \\s+", " ")
             .strip();
         try {
-            Category existingCategory = categoryRepository.findByName(cleanName).get();
+            Category existingCategory = categoryRepository.findByNameIgnoreCase(cleanName).get();
             return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory);
         } catch(NoSuchElementException e) {
             Category category = new Category();
