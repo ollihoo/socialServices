@@ -7,8 +7,12 @@ import de.hoogvliet.socialservices.socialservice.SocialServices;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -99,19 +104,44 @@ class SocialControllerTest {
         verify(socialServices).getLocationsByCategoryAndCity(17, 4);
     }
 
-    @Test
-    void categoryEndpointCreatesWithPost1stTime() throws Exception {
-        mockMvc.perform(post("/category")
-                .content(CATEGORY_NAME))
-            .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
-    }
+    @Nested
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    public class CategoryEndpointTest {        
+        @Test
+        @Order(1)
+        void createsWithPost() throws Exception {
+            mockMvc.perform(post("/category")
+                    .content(CATEGORY_NAME))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+        }
 
-    @Test
-    void categoryEndpointCreatesWithPost2ndTime() throws Exception {
-        mockMvc.perform(post("/category")
-                .content(CATEGORY_NAME))
-            .andExpect(status().isConflict())
-            .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+        @Test
+        @Order(2)
+        void createsWithPostConflict() throws Exception {
+            mockMvc.perform(post("/category")
+                    .content(CATEGORY_NAME))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+        }
+
+        @Test
+        @Order(3)
+        void readsWithGet() throws Exception {
+            Category c = categoryRepository.findByName(CATEGORY_NAME).get();
+            assertNotNull(c);
+            int id = c.getId();
+            mockMvc.perform(get("/category/" + id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+        }
+
+        @Test
+        @Order(4)
+        void readsWithGetNotFound() throws Exception {
+            int nonExistentId = -1;
+            mockMvc.perform(get("/category/" + nonExistentId))
+                .andExpect(status().isNotFound());
+        }
     }
 }
