@@ -20,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +30,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -142,6 +145,28 @@ class SocialControllerTest {
             int nonExistentId = -1;
             mockMvc.perform(get("/category/" + nonExistentId))
                 .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @Order(5)
+        void updatesWithPut() throws Exception {
+            Category c = categoryRepository.findByName(CATEGORY_NAME).get();
+            assertNotNull(c);
+            String newName = "UpdatedCategoryName";
+            c.setName(newName);
+            mockMvc.perform(put("/category")
+                    .contentType("application/json")
+                    .content(new ObjectMapper().writeValueAsString(c))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", Matchers.is(newName)));
+            c.setName(CATEGORY_NAME);
+            mockMvc.perform(put("/category")
+                .contentType("application/json")
+                .content(new ObjectMapper().writeValueAsString(c))
+            )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
         }
     }
 }
