@@ -26,8 +26,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -167,6 +169,25 @@ class SocialControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+        }
+
+        @Test
+        @Order(6)
+        void deletesWithDelete() throws Exception {
+            Category c = categoryRepository.findByName(CATEGORY_NAME).get();
+            assertNotNull(c);
+            int id = c.getId();
+            mockMvc.perform(delete("/category/" + id))
+                .andExpect(status().isNoContent());
+            assertTrue(categoryRepository.findByName(CATEGORY_NAME).isEmpty());
+        }
+
+        @Test
+        @Order(7)
+        void deletesWithDeleteNotFound() throws Exception {
+            int invalidId = -1;
+            mockMvc.perform(delete("/category/" + invalidId))
+                .andExpect(status().isNotFound());
         }
     }
 }
