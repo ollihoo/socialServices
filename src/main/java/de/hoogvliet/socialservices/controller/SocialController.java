@@ -19,7 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
@@ -69,10 +69,11 @@ public class SocialController {
             .replace(" und ", " & ")
             .replaceAll(" \\s+", " ")
             .strip();
-        try {
-            Category existingCategory = categoryRepository.findByNameIgnoreCase(cleanName).get();
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory);
-        } catch(NoSuchElementException e) {
+        Optional<Category> existingCategory = categoryRepository.findByNameIgnoreCase(cleanName);
+
+        if (existingCategory.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory.get());
+        } else {
             Category category = new Category();
             category.setName(cleanName);
             Category newCategory = categoryRepository.save(category);
@@ -90,10 +91,10 @@ public class SocialController {
     @GetMapping("/category/{id}")
     @ResponseBody
     public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
-        try {
-            Category category = categoryRepository.findById(id).get();
-            return ResponseEntity.ok(category);
-        } catch(NoSuchElementException e) {
+       Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()) {
+            return ResponseEntity.ok(category.get());
+        } else {
             log.warn("Category not found: " + id);
             return ResponseEntity.notFound().build();
         }
