@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TSVCategoryParserTest {
+    public static final String ESSEN = "Essen";
     @InjectMocks
     private TSVCategoryParser tsvCategoryParser;
 
@@ -36,18 +37,18 @@ class TSVCategoryParserTest {
 
     @Test
     void testThatGivenCategoryIsFound() {
-        String[] inputArray = { "", "", "", "", "", "", "Essen"};
-        when(categoryService.createCategory(anyString())).thenReturn(createCategory("Essen"));
+        String[] inputArray = { "", "", "", "", "", "", ESSEN};
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory());
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
         assertEquals("Essen", actualCategories.getFirst().getName());
-        verify(categoryService).createCategory("Essen");
+        verify(categoryService).createCategory(ESSEN);
     }
 
     @Test
     void testThatGivenCategoryIsTrimmedCorrectlyFound() {
         String[] inputArray = { "", "", "", "", "", "","\tEssen  "};
-        when(categoryService.createCategory(anyString())).thenReturn(createCategory("Essen"));
-        List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory());
+        tsvCategoryParser.getOrCreateCategories(inputArray);
         verify(categoryService).createCategory("Essen");
     }
 
@@ -60,16 +61,16 @@ class TSVCategoryParserTest {
 
     @Test
     void testThatCategoryIsCheckedAgainstDatabase() {
-        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        String[] inputArray = { "", "", "", "", "", "",ESSEN};
         tsvCategoryParser.getOrCreateCategories(inputArray);
         verify(categoryRepository).findByName("Essen");
     }
 
     @Test
     void splitCategoriesEntry_splits_string_into_categories () {
-        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        String[] inputArray = { "", "", "", "", "", "",ESSEN};
         List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
-        assertEquals("Essen", result.getFirst());
+        assertEquals(ESSEN, result.getFirst());
         assertEquals(1, result.size());
     }
 
@@ -87,9 +88,9 @@ class TSVCategoryParserTest {
         assertTrue(result.isEmpty());
     }
 
-    private Category createCategory(String categoryName) {
+    private Category createCategory() {
         Category category = new Category();
-        category.setName(categoryName);
+        category.setName(ESSEN);
         return category;
     }
 
