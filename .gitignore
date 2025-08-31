@@ -10,3 +10,4 @@ docker/socialservices/input/*
 !docker/socialservices/input/*TEMPLATE.tsv
 docker/socialservices/osm_cache/*.json
 .env
+*.db
