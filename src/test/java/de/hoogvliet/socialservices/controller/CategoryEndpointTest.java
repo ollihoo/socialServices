@@ -10,6 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 public class CategoryEndpointTest {
-    private static final String RESPONSE_MSG = "There is a problem with the parameters you entered.";
     private static final String CATEGORY_NAME = "TEST-CATEGORY";
 
     @Autowired
@@ -56,8 +57,7 @@ public class CategoryEndpointTest {
     @Test
     @Order(3)
     void readsWithGet() throws Exception {
-        Category c = categoryRepository.findByName(CATEGORY_NAME).get();
-        assertNotNull(c);
+        Category c = getTestCategory();
         int id = c.getId();
         mockMvc.perform(get("/category/" + id))
                 .andExpect(status().isOk())
@@ -75,8 +75,7 @@ public class CategoryEndpointTest {
     @Test
     @Order(5)
     void updatesWithPut() throws Exception {
-        Category c = categoryRepository.findByName(CATEGORY_NAME).get();
-        assertNotNull(c);
+        Category c = getTestCategory();
         String newName = "UpdatedCategoryName";
         c.setName(newName);
         mockMvc.perform(put("/category")
@@ -92,6 +91,12 @@ public class CategoryEndpointTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", Matchers.is(CATEGORY_NAME)));
+    }
+
+    private Category getTestCategory() {
+        Optional<Category> c = categoryRepository.findByName(CATEGORY_NAME);
+        assertTrue(c.isPresent());
+        return c.get();
     }
 
     @Test

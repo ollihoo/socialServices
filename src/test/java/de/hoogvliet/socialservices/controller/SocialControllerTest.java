@@ -1,7 +1,6 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.Category;
-import de.hoogvliet.socialservices.socialservice.CategoryRepository;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import org.junit.jupiter.api.Test;
@@ -32,8 +31,7 @@ class SocialControllerTest {
     private static final List<Location> ANY_LOC_LIST = Collections.emptyList();
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private CategoryRepository categoryRepository;
+
     @MockBean
     private SocialServices socialServices;
 
