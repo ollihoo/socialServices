@@ -119,15 +119,15 @@ public class SocialController {
     @PutMapping("/category")
     public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
         int catId = category.getId();
-        try{
-            categoryRepository.findById(catId).get();
+        if (categoryRepository.findById(catId).isPresent()) {
             Category updatedCategory = categoryRepository.save(category);
             return ResponseEntity.ok(updatedCategory);
-        } catch(NoSuchElementException e) {
-            log.warn("Category not found: " + catId);
+        } else {
+            log.warn("Category update failed: {}", catId);
             return ResponseEntity.notFound().build();
         }
     }
+
     @Operation(summary = "Delete a category by ID", description = "Deletes a category by ID", tags = "Category-CRUD")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "No Content - Category deleted"),
@@ -135,12 +135,11 @@ public class SocialController {
     })
     @DeleteMapping("/category/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
-        try {
-            categoryRepository.findById(id).get();
+        if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
             return ResponseEntity.noContent().build();
-        } catch (NoSuchElementException e) {
-            log.warn("Category not found: " + id);
+        } else {
+            log.warn("Category deletion failed: {}", id);
             return ResponseEntity.notFound().build();
         }
     }
