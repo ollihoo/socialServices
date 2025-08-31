@@ -2,6 +2,7 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.CategoryRepository;
+import de.hoogvliet.socialservices.socialservice.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class TSVCategoryParser {
     private static final int COLUMN_CATEGORIES = 6;
     private static final int NUMBER_OF_ELEMENTS = COLUMN_CATEGORIES + 1;
     private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     public List<Category> getOrCreateCategories(String[] entry) {
         List<Category> categories = new ArrayList<>();
@@ -39,14 +41,7 @@ public class TSVCategoryParser {
 
     private Category searchCategoryByName(String categoryName) {
         Optional<Category> optionalCategory = categoryRepository.findByName(categoryName);
-        return optionalCategory.orElseGet(() -> createCategory(categoryName));
-    }
-
-    private Category createCategory(String cat) {
-        Category myCat = new Category();
-        myCat.setName(cat);
-        categoryRepository.save(myCat);
-        return myCat;
+        return optionalCategory.orElseGet(() -> categoryService.createCategory(categoryName));
     }
 
 }

@@ -1,10 +1,6 @@
 package de.hoogvliet.socialservices.controller;
 
-import de.hoogvliet.socialservices.socialservice.Category;
-import de.hoogvliet.socialservices.socialservice.CategoryRepository;
-import de.hoogvliet.socialservices.socialservice.City;
-import de.hoogvliet.socialservices.socialservice.Location;
-import de.hoogvliet.socialservices.socialservice.SocialServices;
+import de.hoogvliet.socialservices.socialservice.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,6 +21,7 @@ import java.util.Optional;
 public class SocialController {
     private final SocialServices socialServices;
     private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @GetMapping("/social")
     @ResponseBody
@@ -74,10 +71,8 @@ public class SocialController {
         if (existingCategory.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory.get());
         } else {
-            Category category = new Category();
-            category.setName(cleanName);
-            Category newCategory = categoryRepository.save(category);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newCategory);
+            Category category = categoryRepository.save(categoryService.createCategory(cleanName));
+            return ResponseEntity.status(HttpStatus.CREATED).body(category);
         }
     }
 
@@ -85,7 +80,7 @@ public class SocialController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "OK - Category retrieved"),
         @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
-            schema = @Schema(implementation = Void.class)
+            schema = @Schema()
         )),
     })
     @GetMapping("/category/{id}")
@@ -114,7 +109,7 @@ public class SocialController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "OK - Category updated"),
         @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
-            schema = @Schema(implementation = Void.class)
+            schema = @Schema()
         ))
     })
     @PutMapping("/category")

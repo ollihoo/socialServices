@@ -2,6 +2,7 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.CategoryRepository;
+import de.hoogvliet.socialservices.socialservice.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TSVCategoryParserTest {
@@ -20,6 +23,9 @@ class TSVCategoryParserTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private CategoryService categoryService;
 
     @Test
     void testThatAllGivenCategoriesAreReturned() {
@@ -31,15 +37,18 @@ class TSVCategoryParserTest {
     @Test
     void testThatGivenCategoryIsFound() {
         String[] inputArray = { "", "", "", "", "", "", "Essen"};
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory("Essen"));
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
         assertEquals("Essen", actualCategories.getFirst().getName());
+        verify(categoryService).createCategory("Essen");
     }
 
     @Test
     void testThatGivenCategoryIsTrimmedCorrectlyFound() {
         String[] inputArray = { "", "", "", "", "", "","\tEssen  "};
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory("Essen"));
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
-        assertEquals("Essen", actualCategories.getFirst().getName());
+        verify(categoryService).createCategory("Essen");
     }
 
     @Test
@@ -77,4 +86,11 @@ class TSVCategoryParserTest {
         List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
         assertTrue(result.isEmpty());
     }
+
+    private Category createCategory(String categoryName) {
+        Category category = new Category();
+        category.setName(categoryName);
+        return category;
+    }
+
 }
