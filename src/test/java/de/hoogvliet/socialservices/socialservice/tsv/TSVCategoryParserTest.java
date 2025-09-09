@@ -2,6 +2,7 @@ package de.hoogvliet.socialservices.socialservice.tsv;
 
 import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.CategoryRepository;
+import de.hoogvliet.socialservices.socialservice.CategoryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,15 +12,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TSVCategoryParserTest {
+    public static final String ESSEN = "Essen";
     @InjectMocks
     private TSVCategoryParser tsvCategoryParser;
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private CategoryService categoryService;
 
     @Test
     void testThatAllGivenCategoriesAreReturned() {
@@ -30,16 +37,19 @@ class TSVCategoryParserTest {
 
     @Test
     void testThatGivenCategoryIsFound() {
-        String[] inputArray = { "", "", "", "", "", "", "Essen"};
+        String[] inputArray = { "", "", "", "", "", "", ESSEN};
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory());
         List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
         assertEquals("Essen", actualCategories.getFirst().getName());
+        verify(categoryService).createCategory(ESSEN);
     }
 
     @Test
     void testThatGivenCategoryIsTrimmedCorrectlyFound() {
         String[] inputArray = { "", "", "", "", "", "","\tEssen  "};
-        List<Category> actualCategories = tsvCategoryParser.getOrCreateCategories(inputArray);
-        assertEquals("Essen", actualCategories.getFirst().getName());
+        when(categoryService.createCategory(anyString())).thenReturn(createCategory());
+        tsvCategoryParser.getOrCreateCategories(inputArray);
+        verify(categoryService).createCategory("Essen");
     }
 
     @Test
@@ -51,16 +61,16 @@ class TSVCategoryParserTest {
 
     @Test
     void testThatCategoryIsCheckedAgainstDatabase() {
-        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        String[] inputArray = { "", "", "", "", "", "",ESSEN};
         tsvCategoryParser.getOrCreateCategories(inputArray);
         verify(categoryRepository).findByName("Essen");
     }
 
     @Test
     void splitCategoriesEntry_splits_string_into_categories () {
-        String[] inputArray = { "", "", "", "", "", "","Essen"};
+        String[] inputArray = { "", "", "", "", "", "",ESSEN};
         List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
-        assertEquals("Essen", result.getFirst());
+        assertEquals(ESSEN, result.getFirst());
         assertEquals(1, result.size());
     }
 
@@ -77,4 +87,11 @@ class TSVCategoryParserTest {
         List<String> result = TSVCategoryParser.splitCategoriesEntry(inputArray);
         assertTrue(result.isEmpty());
     }
+
+    private Category createCategory() {
+        Category category = new Category();
+        category.setName(ESSEN);
+        return category;
+    }
+
 }

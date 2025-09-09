@@ -4,6 +4,8 @@ import de.hoogvliet.socialservices.socialservice.Category;
 import de.hoogvliet.socialservices.socialservice.Location;
 import de.hoogvliet.socialservices.socialservice.SocialServices;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 class SocialControllerTest {
     private static final String RESPONSE_MSG = "There is a problem with the parameters you entered.";
@@ -28,6 +31,7 @@ class SocialControllerTest {
     private static final List<Location> ANY_LOC_LIST = Collections.emptyList();
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     private SocialServices socialServices;
 
@@ -81,6 +85,5 @@ class SocialControllerTest {
                 .andExpect(content().string("[]"));
         verify(socialServices).getLocationsByCategoryAndCity(17, 4);
     }
-
 
 }
