@@ -1,6 +1,7 @@
 package de.hoogvliet.socialservices.controller;
 
 import de.hoogvliet.socialservices.socialservice.*;
+import de.hoogvliet.socialservices.socialservice.tsv.TSVParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,7 @@ public class SocialController {
     private final SocialServices socialServices;
     private final CategoryRepository categoryRepository;
     private final CategoryService categoryService;
+    private final TSVParser tsvParser;
 
     @GetMapping("/social")
     @ResponseBody
@@ -138,6 +140,16 @@ public class SocialController {
             log.warn("Category deletion failed: {}", id);
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Operation(summary = "Trigger TSV update", description = "Triggers service to update from TSV", tags = "Config")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Updated DB from TSV")
+    })
+    @PostMapping("/tsv-update")
+    public ResponseEntity<Void> triggerTSVUpdate() {
+        tsvParser.getAllEntriesFromTSV();
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
