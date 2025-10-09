@@ -16,4 +16,7 @@ public class City {
 
     @NonNull
     private String name;
+
+    private Double latitude;
+    private Double longitude;
 }

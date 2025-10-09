@@ -13,9 +13,9 @@ public class OsmResponse {
     @JsonProperty
     private String type;
 
-    @JsonProperty
+    @JsonProperty("lat")
     private Double latitude;
     
-    @JsonProperty
+    @JsonProperty("lon")
     private Double longitude;
 }

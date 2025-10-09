@@ -5,9 +5,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CityRepository  extends JpaRepository<City, Long> {
+
+    List<City> findByLatitudeNullOrLongitudeNull();
 
     Optional<City> findByName(String name);
 
