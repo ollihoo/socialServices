@@ -2,6 +2,8 @@ services:
 
   backend:
     image: ${DOCKER_USER}/socialservice_backend:${IMAGE_TAG_BACKEND}
+    volumes:
+      - './docker/socialservices:/app/conf:rw'
     ports:
       - "8088:8080"
 
