@@ -24,10 +24,9 @@ else
 fi
 
 if [ "$DEPLOY" = "true" ]; then
-  docker buildx create --use --name arm-builder
-  docker buildx inspect --bootstrap
-
-  docker buildx build --platform linux/amd64 -t ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} . --load
+  docker buildx create --use --name arm-builder && \
+  docker buildx inspect --bootstrap && \
+  docker buildx build --platform linux/amd64 -t ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} . --load && \
   docker buildx build --platform linux/arm64 -t ${DOCKER_USER}/${APP_NAME}:arm_${IMAGE_TAG} . --load
 else
   ./gradlew build && docker build -t ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} .
