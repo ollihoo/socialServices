@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,7 +18,8 @@ import java.util.List;
 
 @Service @Slf4j
 public class OSMSearchClient {
-    private static final String USER_AGENT_IDENTIFIER = "de.locating.services.13353";
+    @Value("${application.osm.useragent.identifier}")
+    private String USER_AGENT_IDENTIFIER;
     public static final String NOMINATIM_HOST = "nominatim.openstreetmap.org";
     public static final String NOMINATIM_PATH = "/search.php";
 
@@ -26,8 +28,7 @@ public class OSMSearchClient {
         URI uri = getRequestUri(street, postalCode, city);
         HttpRequest request = createRequest(uri);
 
-        HttpClient client = HttpClient.newHttpClient();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             ObjectMapper mapper = new ObjectMapper()
@@ -40,7 +41,7 @@ public class OSMSearchClient {
         }
     }
 
-    private static HttpRequest createRequest(URI uri) {
+    private HttpRequest createRequest(URI uri) {
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .header("User-Agent", USER_AGENT_IDENTIFIER)

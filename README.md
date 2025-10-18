@@ -23,3 +23,4 @@ Start directly with [SocialServicesApplication.java](src/main/java/de/hoogvliet/
 
 ## More Information
 * [Development Information](doc/development.md)
+* This application uses Openstreetmap and https://leafletjs.com/ 
