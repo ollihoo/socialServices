@@ -43,3 +43,5 @@ application:
   osm:
     cache:
       path: file:./docker/socialservices/osm_cache/
+    useragent:
+      identifier: de.locating.services.test.13353

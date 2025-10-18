@@ -16,7 +16,12 @@ starttime=$(date +%s)
 IMAGE_TAG=$(date +%y%m%d%H%M)
 APP_NAME=socialservice_backend
 
-./gradlew build
+if ./gradlew build; then
+  echo "✅ gradle build successful"
+else
+  echo "❌ gradle build failed"
+  exit 1
+fi
 
 if [ "$DEPLOY" = "true" ]; then
   docker buildx create --use --name arm-builder
@@ -29,9 +34,9 @@ else
 fi
 
 if [ $? -eq 0 ]; then
-    echo OK
+    echo "✅ docker build successful"
 else
-    echo FAIL: build failed
+    echo "❌ docker build failed"
     exit 1
 fi
 
@@ -41,10 +46,11 @@ if [ "$DEPLOY" = "true" ]; then
   if [ $? -eq 0 ]; then
       endtime=$(date +%s)
       delta=$((endtime - starttime))
-      echo "Ok. Latest IMAGE: ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG} Duration: $delta seconds"
+      echo "Duration: $delta seconds"
+      echo "✅ Ok. Latest IMAGE: ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG}"
       exit 0
   else
-      echo FAIL: push failed
+      echo "❌ docker push failed"
       exit 1
   fi
 else
