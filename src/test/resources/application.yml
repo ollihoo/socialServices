@@ -15,7 +15,7 @@ management:
 
 spring:
   datasource:
-    url: "jdbc:sqlite:./docker/socialservices/socialservices.db"
+    url: "jdbc:sqlite:./docker/socialservices/socialservices-test.db"
     driver-class-name: org.sqlite.JDBC
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
@@ -25,6 +25,17 @@ spring:
       ddl-auto: update
   flyway:
     baseline-on-migrate: true
+  thymeleaf:
+    enabled: true
+    check-template: true
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+
+server:
+  error:
+    whitelabel:
+      enabled: true
 
 application:
   tsv:

@@ -1,9 +1,12 @@
 package de.hoogvliet.socialservices.controller;
 
-import de.hoogvliet.socialservices.socialservice.Category;
-import de.hoogvliet.socialservices.socialservice.City;
-import de.hoogvliet.socialservices.socialservice.Location;
-import de.hoogvliet.socialservices.socialservice.SocialServices;
+import de.hoogvliet.socialservices.socialservice.*;
+import de.hoogvliet.socialservices.socialservice.tsv.TSVParser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,10 +16,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
     private final SocialServices socialServices;
+    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
+    private final TSVParser tsvParser;
 
     @GetMapping("/social")
     @ResponseBody
@@ -46,6 +53,103 @@ public class SocialController {
     @ResponseBody
     public List<City> getCities() {
         return socialServices.getCities();
+    }
+
+    @Operation(summary = "Create a new category", description = "Creates a new category", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Created - Category created"),
+        @ApiResponse(responseCode = "409", description = "Conflict - Category already exists"),
+    })
+    @PostMapping("/category")
+    @ResponseBody
+    public ResponseEntity<Category> createCategory(@RequestBody String categoryName) {
+        String cleanName = categoryName
+            .replace("\"", "")
+            .replace(" und ", " & ")
+            .replaceAll(" \\s+", " ")
+            .strip();
+        Optional<Category> existingCategory = categoryRepository.findByNameIgnoreCase(cleanName);
+
+        if (existingCategory.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(existingCategory.get());
+        } else {
+            Category category = categoryRepository.save(categoryService.createCategory(cleanName));
+            return ResponseEntity.status(HttpStatus.CREATED).body(category);
+        }
+    }
+
+    @Operation(summary = "Read a category by ID", description = "Retrieves a category by its ID", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Category retrieved"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
+            schema = @Schema()
+        )),
+    })
+    @GetMapping("/category/{id}")
+    @ResponseBody
+    public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
+       Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()) {
+            return ResponseEntity.ok(category.get());
+        } else {
+            log.warn("Category not found: " + id);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Read all categories", description = "Retrieves all categories", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Categories retrieved")
+    })
+    @GetMapping("/category")
+    @ResponseBody
+    public ResponseEntity<List<Category>> getAllCategories() {
+        return ResponseEntity.ok(socialServices.getCategories());
+    }
+
+    @Operation(summary = "Update an existing category", description = "Updates the name of an existing category", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Category updated"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found", content = @Content(
+            schema = @Schema()
+        ))
+    })
+    @PutMapping("/category")
+    public ResponseEntity<Category> updateCategory(@RequestBody Category category) {
+        int catId = category.getId();
+        if (categoryRepository.findById(catId).isPresent()) {
+            Category updatedCategory = categoryRepository.save(category);
+            return ResponseEntity.ok(updatedCategory);
+        } else {
+            log.warn("Category update failed: {}", catId);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Delete a category by ID", description = "Deletes a category by ID", tags = "Category-CRUD")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "No Content - Category deleted"),
+        @ApiResponse(responseCode = "404", description = "Not Found - Category ID not found")
+    })
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
+        if (categoryRepository.findById(id).isPresent()) {
+            categoryRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            log.warn("Category deletion failed: {}", id);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "Trigger TSV update", description = "Triggers service to update from TSV", tags = "Config")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "OK - Updated DB from TSV")
+    })
+    @PostMapping("/tsv-update")
+    public ResponseEntity<Void> triggerTSVUpdate() {
+        tsvParser.getAllEntriesFromTSV();
+        return ResponseEntity.ok().build();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

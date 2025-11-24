@@ -13,4 +13,10 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public Category createCategory(String cat) {
+        Category myCat = new Category();
+        myCat.setName(cat);
+        categoryRepository.save(myCat);
+        return myCat;
+    }
 }

@@ -5,9 +5,8 @@
 bin/
 build/
 src/main/resources/application.yml
-docker/socialservices/socialservices.db
-docker/socialservices/input/*
+docker/socialservices/**/*
 !docker/socialservices/input/*TEMPLATE.tsv
-docker/socialservices/osm_cache/*.json
+!docker/socialservices/application.yml
 .env
 *.db
