@@ -30,9 +30,9 @@ public class ScheduledGeoCoder {
         }
 
         try {
-            List<OsmLocation> osmData = osmSearchClient.getOsmData(loc.getAddress(), loc.getPostCode(), loc.getCity());
+            List<OsmLocation> osmData = osmSearchClient.getOsmLocations(loc.getAddress(), loc.getPostCode(), loc.getCity());
             if (osmData.size() == 1) {
-                saveLocation(loc, osmData.get(0));
+                saveLocation(loc, osmData.getFirst());
             } else {
                 log.warn("Ambiguous data for '{}'. Data was {}, but not 1.", loc.getAddress(), osmData.size());
                 for (OsmLocation osmLocation : osmData) {
@@ -42,7 +42,7 @@ public class ScheduledGeoCoder {
                     } else {
                         log.warn("OSM entry is type {} for {} -> lat/lon {},{}",
                                 osmLocation.getType(),
-                                loc.getName(), osmLocation.getLat(), osmLocation.getLon());
+                                loc.getName(), osmLocation.getLatitude(), osmLocation.getLongitude());
                     }
                 }
             }
@@ -63,8 +63,8 @@ public class ScheduledGeoCoder {
     }
 
     private void saveLocation (Location loc, OsmLocation osmLocation) {
-        loc.setLatitude(osmLocation.getLat());
-        loc.setLongitude(osmLocation.getLon());
+        loc.setLatitude(osmLocation.getLatitude());
+        loc.setLongitude(osmLocation.getLongitude());
         locationRepository.save(loc);
         log.info("Updated location {} with lat/lon: {}/{}",
                 loc.getName(), loc.getLatitude(), loc.getLongitude());

@@ -20,7 +20,6 @@ class CachedOsmClientTest {
     private static final String ANY_STREET = "Straße 34";
     private static final String ANY_POSTAL_CODE = "13353 AD";
     private static final String ANY_CITY = "Berlin/Wedding";
-    private static final List<OsmLocation> ANY_RESULT = Collections.EMPTY_LIST;
     @InjectMocks
     private CachedOsmClient cachedOsmClient;
     @Mock
@@ -33,36 +32,50 @@ class CachedOsmClientTest {
     private OsmMapper osmMapper;
 
     @Test
-    void whenCacheFails_GetOsmDataFromOsmSearchClient() throws IOException, URISyntaxException, InterruptedException {
+    void when_location_cache_fails_get_data_from_getOsmLocationsData() throws IOException, URISyntaxException, InterruptedException {
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmSearchClient).getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        cachedOsmClient.getOsmLocations(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmSearchClient).getOsmLocations(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmMapper, never()).getLocations(cachedResource);
     }
 
     @Test
-    void whenCacheFails_ResultIsWrittenToCache() throws IOException, URISyntaxException, InterruptedException {
+    void when_location_cache_fails_response_is_written_into_cache_file() throws IOException, URISyntaxException, InterruptedException {
+        List<OsmLocation> anyData = Collections.emptyList();
         when(cachedResource.exists()).thenReturn(false);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        when(osmSearchClient.getOsmData(anyString(), anyString(), anyString())).thenReturn(ANY_RESULT);
-        cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmMapper).write(ANY_RESULT, cachedResource);
+        when(osmSearchClient.getOsmLocations(anyString(), anyString(), anyString())).thenReturn(anyData);
+        cachedOsmClient.getOsmLocations(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmMapper).write(anyData, cachedResource);
     }
 
     @Test
-    void whenCacheHits_DontUseOsmSearchClient() throws IOException, URISyntaxException, InterruptedException {
+    void when_location_cache_hits_get_data_from_cache() throws IOException, URISyntaxException, InterruptedException {
         when(cachedResource.exists()).thenReturn(true);
         when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmSearchClient, never()).getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        cachedOsmClient.getOsmLocations(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
+        verify(osmMapper).getLocations(cachedResource);
+        verify(osmSearchClient, never()).getOsmLocations(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
     }
 
     @Test
-    void whenCacheHits_GetDataFromOsmCache() throws IOException {
+    void when_city_cache_fails_get_data_from_client() throws IOException, URISyntaxException, InterruptedException {
+        when(cachedResource.exists()).thenReturn(false);
+        when(cacheConfiguration.getCacheResource(anyString())).thenReturn(cachedResource);
+        cachedOsmClient.getOsmCities(ANY_CITY);
+        verify(osmSearchClient).getOsmCities(ANY_CITY);
+        verify(osmMapper, never()).getCities(cachedResource);
+
+    }
+
+    @Test
+    void when_city_cache_hits_get_data_from_cache() throws IOException, URISyntaxException, InterruptedException {
         when(cachedResource.exists()).thenReturn(true);
-        when(cacheConfiguration.getCacheResource(anyString(), anyString(), anyString())).thenReturn(cachedResource);
-        cachedOsmClient.getOsmData(ANY_STREET, ANY_POSTAL_CODE, ANY_CITY);
-        verify(osmMapper).get(cachedResource);
+        when(cacheConfiguration.getCacheResource(anyString())).thenReturn(cachedResource);
+        cachedOsmClient.getOsmCities(ANY_CITY);
+        verify(osmMapper).getCities(cachedResource);
+        verify(osmSearchClient, never()).getOsmCities(ANY_CITY);
     }
 
 }
