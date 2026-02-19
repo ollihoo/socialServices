@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -16,7 +17,8 @@ import java.util.List;
 
 @Service @Slf4j
 public class OSMSearchClient {
-    private static final String USER_AGENT_IDENTIFIER = "de.locating.services.13353";
+    @Value("${application.osm.useragent.identifier}")
+    private String USER_AGENT_IDENTIFIER;
     public static final String NOMINATIM_HOST = "nominatim.openstreetmap.org";
     public static final String NOMINATIM_PATH = "/search.php";
     public static final String SCHEME = "https";
@@ -36,7 +38,7 @@ public class OSMSearchClient {
         return getObjectMapper().readValue(response.body(), new TypeReference<>() {});
     }
 
-    private static HttpResponse<String> getOsmResponse(URI uri) throws IOException, InterruptedException {
+    private HttpResponse<String> getOsmResponse(URI uri) throws IOException, InterruptedException {
         HttpRequest request = createRequest(uri);
 
         try (HttpClient client = HttpClient.newHttpClient()) {
@@ -53,7 +55,7 @@ public class OSMSearchClient {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    private static HttpRequest createRequest(URI uri) {
+    private HttpRequest createRequest(URI uri) {
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .header("User-Agent", USER_AGENT_IDENTIFIER)
