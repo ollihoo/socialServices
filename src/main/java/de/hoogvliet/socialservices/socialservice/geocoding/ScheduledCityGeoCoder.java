@@ -1,7 +1,6 @@
 package de.hoogvliet.socialservices.socialservice.geocoding;
 
 import de.hoogvliet.socialservices.osm.CachedOsmClient;
-import de.hoogvliet.socialservices.osm.OSMSearchClient;
 import de.hoogvliet.socialservices.osm.OsmCity;
 import de.hoogvliet.socialservices.socialservice.City;
 import de.hoogvliet.socialservices.socialservice.CityRepository;
@@ -34,9 +33,22 @@ public class ScheduledCityGeoCoder {
                     cityRepository.save(city);
                 } else {
                     log.warn("{} produces {} entries", city.getName(), osmCities.size());
+                    log.warn("input was {}", osmCities);
+                    checkForVillage(city, osmCities);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private void checkForVillage(City city, List<OsmCity> osmCities) {
+        for (OsmCity village: osmCities) {
+            if (village.getType().equals("village")) {
+                city.setLatitude(village.getLatitude());
+                city.setLongitude(village.getLongitude());
+                cityRepository.save(city);
+                break;
             }
         }
     }
