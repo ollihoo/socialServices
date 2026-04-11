@@ -17,6 +17,10 @@ public class SocialServices {
         return categoryRepository.findAllByOrderByNameAsc();
     }
 
+    public List<Category> getOnlineCategories(int categoryId) {
+        return locationCategoryRepository.findCategoriesByCategoryId(categoryId);
+    }
+
     public List<Category> getCategoriesForCity(int cityId) {
         List<Category> categories = locationCategoryRepository.findLocationCategoriesByCity(cityId);
         categories.sort(Comparator.comparing(Category::getName));
@@ -34,4 +38,5 @@ public class SocialServices {
     public List<Location> getLocationsByCategoryAndCity(Integer categoryId, Integer cityId) {
         return locationCategoryRepository.findLocationsByCategoryIdAndCityId(categoryId, cityId);
     }
+
 }
