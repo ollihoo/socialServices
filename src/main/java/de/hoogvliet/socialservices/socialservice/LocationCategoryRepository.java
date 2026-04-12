@@ -23,6 +23,9 @@ public interface LocationCategoryRepository extends JpaRepository<LocationCatego
     @Query("SELECT lc.location from LocationCategory lc WHERE lc.category.id = :categoryId and lc.city.id = :cityId")
     List<Location> findLocationsByCategoryIdAndCityId(Integer categoryId, Integer cityId);
 
+    @Query("SELECT LC.location from LocationCategory LC WHERE LC.category.id IN (:categoryIds) GROUP BY LC.location.id HAVING COUNT(distinct LC.category.id) = 2")
+    List<Location> findLocationsBy2CategoryIds(@Param("categoryIds") List<Integer> categoryIds);
+
     @Query("SELECT lc.category from LocationCategory lc WHERE lc.city.id = :cityId GROUP BY lc.category")
     List<Category> findLocationCategoriesByCity(int cityId);
 
@@ -41,4 +44,6 @@ DELETE FROM location_category WHERE id in (
     @Transactional
     @Query("DELETE FROM LocationCategory lc WHERE lc.location.id = :locationId AND lc.category.id = :categoryId")
     void deleteByCategoryIdAndLocationId(int categoryId, long locationId);
+
+
 }

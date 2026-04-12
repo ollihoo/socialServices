@@ -39,4 +39,7 @@ public class SocialServices {
         return locationCategoryRepository.findLocationsByCategoryIdAndCityId(categoryId, cityId);
     }
 
+    public List<Location> getLocationsBy2Categories(List<Integer> categoryIds) {
+        return locationCategoryRepository.findLocationsBy2CategoryIds(categoryIds);
+    }
 }

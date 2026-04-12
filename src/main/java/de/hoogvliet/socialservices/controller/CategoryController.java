@@ -34,7 +34,7 @@ public class CategoryController {
         return socialServices.getCategories();
     }
 
-    @GetMapping("/onlinecategories")
+    @GetMapping("/categories/online")
     @ResponseBody
     public List<Category> getOnlineCategories() {
         return socialServices.getOnlineCategories(57);

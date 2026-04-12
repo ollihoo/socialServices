@@ -3,8 +3,6 @@ package de.hoogvliet.socialservices.controller;
 import de.hoogvliet.socialservices.socialservice.*;
 import de.hoogvliet.socialservices.socialservice.tsv.TSVParser;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
@@ -33,6 +30,16 @@ public class SocialController {
                 return socialServices.getLocationsByCategoryAndCity(categoryId, cityId);
             }
             return socialServices.getLocationsByCategory(categoryId);
+        }
+        return Collections.emptyList();
+    }
+
+    @GetMapping("/social/online")
+    @ResponseBody
+    public List<Location> getSocialServiceEntities(
+            @RequestParam(value = "c", required = false) Integer categoryId) {
+        if (categoryId != null && categoryId > 0) {
+            return socialServices.getLocationsBy2Categories(List.of(57, categoryId));
         }
         return Collections.emptyList();
     }
