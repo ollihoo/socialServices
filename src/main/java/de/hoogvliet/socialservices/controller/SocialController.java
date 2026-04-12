@@ -5,10 +5,13 @@ import de.hoogvliet.socialservices.socialservice.tsv.TSVParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -21,10 +24,10 @@ public class SocialController {
     private final TSVParser tsvParser;
 
     @GetMapping("/social")
-    @ResponseBody
+    @ResponseBody @Validated
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c", required = false) Integer categoryId,
-            @RequestParam(value="ct", required = false) Integer cityId) {
+            @RequestParam(value = "c") @Positive @Valid Integer categoryId,
+            @RequestParam(value="ct") @Positive @Valid Integer cityId) {
         if (categoryId != null) {
             if (cityId != null) {
                 return socialServices.getLocationsByCategoryAndCity(categoryId, cityId);
@@ -36,8 +39,9 @@ public class SocialController {
 
     @GetMapping("/social/online")
     @ResponseBody
+    @Validated
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c", required = false) Integer categoryId) {
+            @RequestParam(value = "c") @Positive @Valid Integer categoryId) {
         if (categoryId != null && categoryId > 0) {
             return socialServices.getLocationsBy2Categories(List.of(57, categoryId));
         }
@@ -64,7 +68,7 @@ public class SocialController {
     public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         log.warn(ex.getMessage());
         return new ResponseEntity<>(
-                "There is a problem with the parameters you entered.",
+                "Check your input parameters.",
                 HttpStatus.BAD_REQUEST);
     }
 }

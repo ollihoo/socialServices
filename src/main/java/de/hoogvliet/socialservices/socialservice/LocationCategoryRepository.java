@@ -45,5 +45,4 @@ DELETE FROM location_category WHERE id in (
     @Query("DELETE FROM LocationCategory lc WHERE lc.location.id = :locationId AND lc.category.id = :categoryId")
     void deleteByCategoryIdAndLocationId(int categoryId, long locationId);
 
-
 }

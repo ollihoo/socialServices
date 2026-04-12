@@ -1,5 +1,7 @@
 package de.hoogvliet.socialservices.socialservice;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,9 @@ public class SocialServices {
         return locationCategoryRepository.findLocationsByCategoryId(categoryId);
     }
 
-    public List<Location> getLocationsByCategoryAndCity(Integer categoryId, Integer cityId) {
+    public List<Location> getLocationsByCategoryAndCity(
+            @NotNull @Positive Integer categoryId,
+            @NotNull @Positive Integer cityId) {
         return locationCategoryRepository.findLocationsByCategoryIdAndCityId(categoryId, cityId);
     }
 
