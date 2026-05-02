@@ -1,9 +1,11 @@
 package de.hoogvliet.socialservices.socialservice;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service @RequiredArgsConstructor
 public class CategoryService {
@@ -18,5 +20,13 @@ public class CategoryService {
         myCat.setName(cat);
         categoryRepository.save(myCat);
         return myCat;
+    }
+
+    public Category getCategoryOnline() {
+        Optional<Category> onlineberatung = categoryRepository.findByNameIgnoreCase("Onlineberatung");
+        if (onlineberatung.isPresent()) {
+            return onlineberatung.get();
+        }
+        throw new RuntimeException("No online service category found");
     }
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController@RequiredArgsConstructor @Slf4j
 public class SocialController {
     private final SocialServices socialServices;
+    private final CategoryService categoryService;
     private final TSVParser tsvParser;
 
     @GetMapping("/social")
@@ -41,11 +43,9 @@ public class SocialController {
     @ResponseBody
     @Validated
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c") @Positive @Valid Integer categoryId) {
-        if (categoryId != null && categoryId > 0) {
-            return socialServices.getLocationsBy2Categories(List.of(57, categoryId));
-        }
-        return Collections.emptyList();
+            @Valid @RequestParam(value = "c") @NotNull @Positive Integer categoryId) {
+        Category onlineService = categoryService.getCategoryOnline();
+        return socialServices.getLocationsBy2Categories(List.of(onlineService.getId(), categoryId));
     }
 
     @GetMapping(value = "/cities")
