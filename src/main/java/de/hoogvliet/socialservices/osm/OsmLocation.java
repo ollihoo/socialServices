@@ -2,9 +2,10 @@ package de.hoogvliet.socialservices.osm;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.jackson.JsonComponent;
+import org.springframework.boot.jackson.JacksonComponent;
 
-@JsonComponent @Getter @Setter
+@JacksonComponent
+@Getter @Setter
 public class OsmLocation extends OsmCity {
 
     public String getHouseNumber() {

@@ -3,9 +3,9 @@ package de.hoogvliet.socialservices.osm;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.jackson.JsonComponent;
+import org.springframework.boot.jackson.JacksonComponent;
 
-@JsonComponent @Getter @Setter
+@JacksonComponent @Getter @Setter
 public class OsmResponse {
     @JsonProperty("osm_id")
     private Long osmId;
