@@ -26,8 +26,8 @@ public class SocialController {
     @GetMapping("/social")
     @ResponseBody @Validated
     public List<Location> getSocialServiceEntities(
-            @RequestParam(value = "c") @Positive @Valid Integer categoryId,
-            @RequestParam(value="ct") @Positive @Valid Integer cityId) {
+            @RequestParam(value = "c", required = false) Integer categoryId,
+            @RequestParam(value = "ct", required = false) Integer cityId) {
         if (categoryId != null) {
             if (cityId != null) {
                 return socialServices.getLocationsByCategoryAndCity(categoryId, cityId);
