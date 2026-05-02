@@ -37,7 +37,8 @@ public class CategoryController {
     @GetMapping("/categories/online")
     @ResponseBody
     public List<Category> getOnlineCategories() {
-        return socialServices.getOnlineCategories(57);
+        Category online = categoryService.getCategoryOnline();
+        return socialServices.getOnlineCategories(online.getId());
     }
 
     @Operation(summary = "Create a new category", description = "Creates a new category", tags = "Category-CRUD")
